@@ -1,0 +1,1 @@
+﻿namespace Shared.Entities;public sealed class ClientMovie{    public int Id { get; init; }    public int ClientId { get; init; }    public Client Client { get; init; } = null!;    public int MovieId { get; init; }    public Movie Movie { get; init; } = null!;    public DateTime StartDate { get; set; }    public DateTime ExpectedReturnDate { get; set; }}

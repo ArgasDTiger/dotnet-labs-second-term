@@ -1,0 +1,103 @@
+﻿{
+  "clients": [
+    {
+      "firstName": "Daniel",
+      "middleName": "Ivanovich",
+      "lastName": "Florenco",
+      "phoneNumber": "+380958765915",
+      "homeAddress": "228 Ruska St., Lviv",
+      "passportSeries": "AH",
+      "passportNumber": "234985"
+    },
+    {
+      "firstName": "Oleksandr",
+      "middleName": "Serhiyovych",
+      "lastName": "Shevchenko",
+      "phoneNumber": "+380991234567",
+      "homeAddress": "50 Holovna St., Chernivtsi",
+      "passportSeries": "KE",
+      "passportNumber": "987654"
+    },
+    {
+      "firstName": "Nataliia",
+      "middleName": "Ivanivna",
+      "lastName": "Kovalchuk",
+      "phoneNumber": "+380672345678",
+      "homeAddress": "110 Nezalezhnosti Ave., Donetsk",
+      "passportSeries": null,
+      "passportNumber": "001234567"
+    },
+    {
+      "firstName": "Andrii",
+      "middleName": "Petrovych",
+      "lastName": "Bondarenko",
+      "phoneNumber": "+380933456789",
+      "homeAddress": "77 Heroiv Maidanu St., Kharkiv",
+      "passportSeries": "VT",
+      "passportNumber": "112233"
+    },
+    {
+      "firstName": "Iryna",
+      "middleName": "Mykolaivna",
+      "lastName": "Tkachenko",
+      "phoneNumber": "+380504567890",
+      "homeAddress": "22 Khreshchatyk St., Kyiv",
+      "passportSeries": null,
+      "passportNumber": "002345678"
+    },
+    {
+      "firstName": "Serhii",
+      "middleName": "Volodymyrovych",
+      "lastName": "Kravchenko",
+      "phoneNumber": "+380975678901",
+      "homeAddress": "15 Svobody Ave., Lviv",
+      "passportSeries": null,
+      "passportNumber": "003456789"
+    },
+    {
+      "firstName": "Olena",
+      "middleName": "Anatoliivna",
+      "lastName": "Melnyk",
+      "phoneNumber": "+380666789012",
+      "homeAddress": "40 Sumska St., Kharkiv",
+      "passportSeries": "MC",
+      "passportNumber": "445566"
+    },
+    {
+      "firstName": "Dmytro",
+      "middleName": "Olehovych",
+      "lastName": "Shevchuk",
+      "phoneNumber": "+380637890123",
+      "homeAddress": "1 Derybasivska St., Odesa",
+      "passportSeries": null,
+      "passportNumber": "004567890"
+    },
+    {
+      "firstName": "Yuliia",
+      "middleName": "Viktorivna",
+      "lastName": "Polishchuk",
+      "phoneNumber": "+380988901234",
+      "homeAddress": "2 Kobylianskoi St., Zhytomyr",
+      "passportSeries": "HC",
+      "passportNumber": "778899"
+    },
+    {
+      "firstName": "Volodymyr",
+      "middleName": "Yaroslavovych",
+      "lastName": "Lysenko",
+      "phoneNumber": "+380959012345",
+      "homeAddress": "33 Stepana Bandery St., Lviv",
+      "passportSeries": null,
+      "passportNumber": "005678901"
+    },
+    {
+      "firstName": "Tetiana",
+      "middleName": "Borysivna",
+      "lastName": "Hryhorenko",
+      "phoneNumber": "+380680123456",
+      "homeAddress": "12 Sahaidachnoho St., Kyiv",
+      "passportSeries": null,
+      "passportNumber": "006789012"
+    }
+  ]
+}

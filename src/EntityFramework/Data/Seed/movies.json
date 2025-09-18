@@ -1,0 +1,124 @@
+{
+  "movies": [
+    {
+      "title": "Dune",
+      "description": "A story about Arrakis planet.",
+      "collateralValue": 14.20,
+      "pricePerDay": 2.16
+    },
+    {
+      "title": "Inception",
+      "description": "A thief who enters dreams to steal secrets.",
+      "collateralValue": 18.50,
+      "pricePerDay": 2.50
+    },
+    {
+      "title": "Interstellar",
+      "description": "Explorers travel through a wormhole in space.",
+      "collateralValue": 20.00,
+      "pricePerDay": 2.70
+    },
+    {
+      "title": "The Matrix",
+      "description": "A hacker discovers the truth about reality.",
+      "collateralValue": 15.75,
+      "pricePerDay": 2.30
+    },
+    {
+      "title": "Blade Runner 2049",
+      "description": "A young blade runner uncovers a long-buried secret.",
+      "collateralValue": 16.40,
+      "pricePerDay": 2.20
+    },
+    {
+      "title": "The Godfather",
+      "description": "The story of a powerful mafia family.",
+      "collateralValue": 22.00,
+      "pricePerDay": 3.10
+    },
+    {
+      "title": "Pulp Fiction",
+      "description": "Stories of crime intertwine in Los Angeles.",
+      "collateralValue": 17.30,
+      "pricePerDay": 2.45
+    },
+    {
+      "title": "Fight Club",
+      "description": "An office worker forms an underground fight club.",
+      "collateralValue": 14.90,
+      "pricePerDay": 2.10
+    },
+    {
+      "title": "Forrest Gump",
+      "description": "The extraordinary life journey of a simple man.",
+      "collateralValue": 19.60,
+      "pricePerDay": 2.60
+    },
+    {
+      "title": "Gladiator",
+      "description": "A betrayed general fights as a gladiator.",
+      "collateralValue": 18.10,
+      "pricePerDay": 2.35
+    },
+    {
+      "title": "The Dark Knight",
+      "description": "Batman faces the Joker in Gotham City.",
+      "collateralValue": 21.50,
+      "pricePerDay": 2.95
+    },
+    {
+      "title": "Avatar",
+      "description": "A marine explores the alien world of Pandora.",
+      "collateralValue": 23.40,
+      "pricePerDay": 3.20
+    },
+    {
+      "title": "Titanic",
+      "description": "A tragic love story aboard the Titanic.",
+      "collateralValue": 19.80,
+      "pricePerDay": 2.55
+    },
+    {
+      "title": "Jurassic Park",
+      "description": "Dinosaurs are brought back to life in a theme park.",
+      "collateralValue": 16.90,
+      "pricePerDay": 2.25
+    },
+    {
+      "title": "Star Wars: A New Hope",
+      "description": "A farm boy joins the fight against the Empire.",
+      "collateralValue": 20.70,
+      "pricePerDay": 2.85
+    },
+    {
+      "title": "Avengers: Endgame",
+      "description": "The Avengers attempt to undo Thanos's snap.",
+      "collateralValue": 24.10,
+      "pricePerDay": 3.30
+    },
+    {
+      "title": "The Lord of the Rings: The Fellowship of the Ring",
+      "description": "A hobbit begins a journey to destroy the One Ring.",
+      "collateralValue": 25.50,
+      "pricePerDay": 3.40
+    },
+    {
+      "title": "The Shawshank Redemption",
+      "description": "A man imprisoned for life seeks freedom and hope.",
+      "collateralValue": 18.80,
+      "pricePerDay": 2.40
+    },
+    {
+      "title": "The Silence of the Lambs",
+      "description": "An FBI trainee seeks help from Hannibal Lecter.",
+      "collateralValue": 17.90,
+      "pricePerDay": 2.35
+    },
+    {
+      "title": "Saving Private Ryan",
+      "description": "Soldiers search for a missing paratrooper in WWII.",
+      "collateralValue": 21.00,
+      "pricePerDay": 2.90
+    }
+  ]
+}
