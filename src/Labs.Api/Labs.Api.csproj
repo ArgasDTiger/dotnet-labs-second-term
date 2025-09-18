@@ -4,6 +4,7 @@
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <RootNamespace>EntityFramework.Api</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -16,6 +17,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\EntityFramework\EntityFramework.csproj" />
+        <ProjectReference Include="..\ADO.NET\ADO.NET.csproj" />
     </ItemGroup>
 
 </Project>

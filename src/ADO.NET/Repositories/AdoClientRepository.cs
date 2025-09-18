@@ -1,0 +1,117 @@
+﻿using System.Data;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Options;
+using Shared.Repositories;
+using Shared.Responses;
+using Shared.Settings;
+
+namespace AdoNet.Repositories;
+
+public sealed class AdoClientRepository : IClientRepository
+{
+    private readonly string _connectionString;
+
+    public AdoClientRepository(IOptions<ConnectionStringSettings> connectionStringSettings)
+    {
+        _connectionString = connectionStringSettings.Value.Default;
+    }
+
+    public async Task<ClientWithMoviesResponse?> GetClientByIdAsync(int clientId, CancellationToken cancellationToken)
+    {
+        await using var connection = new SqlConnection(_connectionString);
+        await using var command = new SqlCommand(GetClientByIdSql, connection);
+
+        command.Parameters.Add("@ClientId", SqlDbType.Int).Value = clientId;
+
+        await connection.OpenAsync(cancellationToken);
+
+        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+
+        ClientWithMoviesResponse? client = null;
+        var movies = new List<MovieResponse>();
+
+        while (await reader.ReadAsync(cancellationToken))
+        {
+            client ??= new ClientWithMoviesResponse
+            {
+                Id = reader.GetInt32("Id"),
+                FirstName = reader.GetString("FirstName"),
+                MiddleName = reader.GetString("MiddleName"),
+                LastName = reader.GetString("LastName"),
+                PhoneNumber = reader.GetString("PhoneNumber"),
+                HomeAddress = reader.GetString("HomeAddress"),
+                PassportSeries = await reader.IsDBNullAsync("PassportSeries", cancellationToken)
+                    ? null
+                    : reader.GetString("PassportSeries"),
+                PassportNumber = reader.GetString("PassportNumber"),
+                RentedMovies = movies
+            };
+
+            if (!await reader.IsDBNullAsync("MovieId", cancellationToken))
+            {
+                movies.Add(new MovieResponse
+                {
+                    Id = reader.GetInt32("MovieId"),
+                    Title = reader.GetString("MovieTitle"),
+                    Description = reader.GetString("MovieDescription"),
+                    CollateralValue = reader.GetDecimal("CollateralValue"),
+                    PricePerDay = reader.GetDecimal("PricePerDay")
+                });
+            }
+        }
+
+        return client;
+    }
+
+    public async Task<List<ClientResponse>> GetAllClientsAsync(CancellationToken cancellationToken)
+    {
+        await using var connection = new SqlConnection(_connectionString);
+        await using var command = new SqlCommand(GetClientsSql, connection);
+
+        await connection.OpenAsync(cancellationToken);
+
+        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+
+        var clients = new List<ClientResponse>();
+
+        while (await reader.ReadAsync(cancellationToken))
+        {
+            clients.Add(new ClientResponse
+            {
+                Id = reader.GetInt32("Id"),
+                FirstName = reader.GetString("FirstName"),
+                LastName = reader.GetString("LastName"),
+                MiddleName = reader.GetString("MiddleName"),
+                HomeAddress = reader.GetString("HomeAddress"),
+                PhoneNumber = reader.GetString("PhoneNumber"),
+                PassportNumber = reader.GetString("PassportNumber"),
+                PassportSeries = await reader.IsDBNullAsync("PassportSeries", cancellationToken)
+                    ? null
+                    : reader.GetString("PassportSeries")
+            });
+        }
+
+        return clients;
+    }
+
+    #region SQL queries
+
+    private const string GetClientByIdSql = """
+                                            SELECT 
+                                                c.Id, c.FirstName, c.MiddleName, c.LastName, c.PhoneNumber, 
+                                                c.HomeAddress, c.PassportSeries, c.PassportNumber,
+                                                m.Id as MovieId, m.Title as MovieTitle, m.Description as MovieDescription, 
+                                                m.CollateralValue, m.PricePerDay
+                                            FROM Clients c
+                                            LEFT JOIN ClientMovie cm ON c.Id = cm.ClientId
+                                            LEFT JOIN Movies m ON cm.MovieId = m.Id
+                                            WHERE c.Id = @ClientId
+                                            """;
+
+    private const string GetClientsSql = """
+                                             SELECT Id, FirstName, MiddleName, LastName, PhoneNumber, HomeAddress, PassportSeries, PassportNumber
+                                             FROM Clients
+                                         """;
+
+    #endregion
+}

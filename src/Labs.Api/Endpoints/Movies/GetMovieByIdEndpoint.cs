@@ -1,0 +1,28 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Shared.Repositories;
+using Shared.Responses;
+
+namespace EntityFramework.Api.Endpoints.Movies;
+
+public static class GetMovieByIdEndpoint
+{
+    public static void MapGetMovieById(this WebApplication app)
+    {
+        app.MapGet("api/v1/movies/{id:int}",
+            async ([FromServices] IMovieRepository movieRepository,
+                [FromRoute] int id,
+                CancellationToken cancellationToken) =>
+            {
+                try
+                {
+                    MovieResponse? movie = await movieRepository.GetMovieByIdAsync(id, cancellationToken);
+                    return movie is null ? Results.NotFound() : Results.Ok(movie);
+                }
+                catch (Exception)
+                {
+                    return Results.InternalServerError();
+                }
+                
+            });
+    }
+}
