@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System.Collections.Immutable;
+using System.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
 using Shared.Repositories;
@@ -16,7 +17,7 @@ public sealed class AdoMovieRepository : IMovieRepository
         _connectionString = connectionStringSettings.Value.Default;
     }
 
-    public async Task<MovieResponse?> GetMovieByIdAsync(int movieId, CancellationToken cancellationToken)
+    public async Task<MovieResponse?> GetMovieByIdAsync(Guid movieId, CancellationToken cancellationToken)
     {
         await using var connection = new SqlConnection(_connectionString);
         await using var command = new SqlCommand(GetMovieByIdSql, connection);
@@ -35,7 +36,7 @@ public sealed class AdoMovieRepository : IMovieRepository
         return GetMovieResponseFromReaderAsync(reader);
     }
 
-    public async Task<List<MovieResponse>> GetAllMoviesAsync(CancellationToken cancellationToken)
+    public async Task<ImmutableArray<MovieResponse>> GetAllMoviesAsync(CancellationToken cancellationToken)
     {
         await using var connection = new SqlConnection(_connectionString);
         await using var command = new SqlCommand(GetMoviesSql, connection);
@@ -44,21 +45,21 @@ public sealed class AdoMovieRepository : IMovieRepository
 
         await using var reader = await command.ExecuteReaderAsync(cancellationToken);
 
-        var movies = new List<MovieResponse>();
+        var movies = ImmutableArray.CreateBuilder<MovieResponse>();
 
         while (await reader.ReadAsync(cancellationToken))
         {
             movies.Add(GetMovieResponseFromReaderAsync(reader));
         }
 
-        return movies;
+        return movies.ToImmutable();
     }
 
     private static MovieResponse GetMovieResponseFromReaderAsync(SqlDataReader reader)
     {
         return new MovieResponse
         {
-            Id = reader.GetInt32("Id"),
+            Id = reader.GetGuid("Id"),
             Title = reader.GetString("Title"),
             Description = reader.GetString("Description"),
             CollateralValue = reader.GetDecimal("CollateralValue"),

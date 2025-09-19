@@ -8,8 +8,8 @@ public static class GetClientByIdEndpoint
 {
     public static void MapGetClientById(this WebApplication app)
     {
-        app.MapGet("api/v1/clients/{id:int}",
-            async ([FromServices] IClientRepository clientRepository, [FromRoute] int id,
+        app.MapGet("api/v1/clients/{id:guid}",
+            async ([FromServices] IClientRepository clientRepository, [FromRoute] Guid id,
                 CancellationToken cancellationToken) =>
             {
                 try

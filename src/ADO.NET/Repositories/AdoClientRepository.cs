@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System.Collections.Immutable;
+using System.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
 using Shared.Repositories;
@@ -16,7 +17,7 @@ public sealed class AdoClientRepository : IClientRepository
         _connectionString = connectionStringSettings.Value.Default;
     }
 
-    public async Task<ClientWithMoviesResponse?> GetClientByIdAsync(int clientId, CancellationToken cancellationToken)
+    public async Task<ClientWithMoviesResponse?> GetClientByIdAsync(Guid clientId, CancellationToken cancellationToken)
     {
         await using var connection = new SqlConnection(_connectionString);
         await using var command = new SqlCommand(GetClientByIdSql, connection);
@@ -34,7 +35,7 @@ public sealed class AdoClientRepository : IClientRepository
         {
             client ??= new ClientWithMoviesResponse
             {
-                Id = reader.GetInt32("Id"),
+                Id = reader.GetGuid("Id"),
                 FirstName = reader.GetString("FirstName"),
                 MiddleName = reader.GetString("MiddleName"),
                 LastName = reader.GetString("LastName"),
@@ -51,7 +52,7 @@ public sealed class AdoClientRepository : IClientRepository
             {
                 movies.Add(new MovieResponse
                 {
-                    Id = reader.GetInt32("MovieId"),
+                    Id = reader.GetGuid("MovieId"),
                     Title = reader.GetString("MovieTitle"),
                     Description = reader.GetString("MovieDescription"),
                     CollateralValue = reader.GetDecimal("CollateralValue"),
@@ -63,7 +64,7 @@ public sealed class AdoClientRepository : IClientRepository
         return client;
     }
 
-    public async Task<List<ClientResponse>> GetAllClientsAsync(CancellationToken cancellationToken)
+    public async Task<ImmutableArray<ClientResponse>> GetAllClientsAsync(CancellationToken cancellationToken)
     {
         await using var connection = new SqlConnection(_connectionString);
         await using var command = new SqlCommand(GetClientsSql, connection);
@@ -72,13 +73,13 @@ public sealed class AdoClientRepository : IClientRepository
 
         await using var reader = await command.ExecuteReaderAsync(cancellationToken);
 
-        var clients = new List<ClientResponse>();
+        var clients = ImmutableArray.CreateBuilder<ClientResponse>();
 
         while (await reader.ReadAsync(cancellationToken))
         {
             clients.Add(new ClientResponse
             {
-                Id = reader.GetInt32("Id"),
+                Id = reader.GetGuid("Id"),
                 FirstName = reader.GetString("FirstName"),
                 LastName = reader.GetString("LastName"),
                 MiddleName = reader.GetString("MiddleName"),
@@ -91,7 +92,7 @@ public sealed class AdoClientRepository : IClientRepository
             });
         }
 
-        return clients;
+        return clients.ToImmutable();
     }
 
     #region SQL queries

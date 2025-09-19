@@ -1,18 +1,31 @@
 ﻿using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using Shared.Entities;
+using Microsoft.Extensions.Options;
+using Shared.Settings;
 
 namespace EntityFramework.Data;
 
 public sealed class MoviesRentContext : DbContext
 {
-    public MoviesRentContext(DbContextOptions<MoviesRentContext> options) : base(options)
+    private readonly ConnectionStringSettings _connectionStringSettings;
+
+    public MoviesRentContext(
+        DbContextOptions<MoviesRentContext> options,
+        IOptions<ConnectionStringSettings> connectionStringSettings)
+        : base(options)
     {
+        _connectionStringSettings = connectionStringSettings.Value;
     }
 
-    public DbSet<Client> Clients { get; set; }
-    public DbSet<Movie> Movies { get; set; }
-    public DbSet<ClientMovie> ClientMovie { get; set; }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        base.OnConfiguring(optionsBuilder);
+
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer(_connectionStringSettings.Default);
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

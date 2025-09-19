@@ -1,5 +1,8 @@
-﻿using EntityFramework.Data;
+﻿using System.Collections.Immutable;
+using EntityFramework.Data;
+using EntityFramework.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Shared.Entities;
 using Shared.Repositories;
 using Shared.Responses;
 
@@ -14,9 +17,9 @@ public sealed class EfClientRepository : IClientRepository
         _context = context;
     }
 
-    public Task<ClientWithMoviesResponse?> GetClientByIdAsync(int clientId, CancellationToken cancellationToken)
+    public Task<ClientWithMoviesResponse?> GetClientByIdAsync(Guid clientId, CancellationToken cancellationToken)
     {
-        return _context.Clients.Select(c => new ClientWithMoviesResponse
+        return _context.Set<Client>().Select(c => new ClientWithMoviesResponse
         {
             Id = c.Id,
             FirstName = c.FirstName,
@@ -37,9 +40,9 @@ public sealed class EfClientRepository : IClientRepository
         }).FirstOrDefaultAsync(c => c.Id == clientId, cancellationToken);
     }
 
-    public Task<List<ClientResponse>> GetAllClientsAsync(CancellationToken cancellationToken)
+    public Task<ImmutableArray<ClientResponse>> GetAllClientsAsync(CancellationToken cancellationToken)
     {
-        return _context.Clients.Select(c => new ClientResponse
+        return _context.Set<Client>().Select(c => new ClientResponse
         {
             Id = c.Id,
             FirstName = c.FirstName,
@@ -49,6 +52,6 @@ public sealed class EfClientRepository : IClientRepository
             HomeAddress = c.HomeAddress,
             PassportSeries = c.PassportSeries,
             PassportNumber = c.PassportNumber,
-        }).ToListAsync(cancellationToken);
+        }).ToImmutableArrayAsync(cancellationToken);
     }
 }

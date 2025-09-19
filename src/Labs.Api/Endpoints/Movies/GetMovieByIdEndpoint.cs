@@ -8,9 +8,9 @@ public static class GetMovieByIdEndpoint
 {
     public static void MapGetMovieById(this WebApplication app)
     {
-        app.MapGet("api/v1/movies/{id:int}",
+        app.MapGet("api/v1/movies/{id:guid}",
             async ([FromServices] IMovieRepository movieRepository,
-                [FromRoute] int id,
+                [FromRoute] Guid id,
                 CancellationToken cancellationToken) =>
             {
                 try

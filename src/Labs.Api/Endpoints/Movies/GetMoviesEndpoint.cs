@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Immutable;
+using Microsoft.AspNetCore.Mvc;
 using Shared.Repositories;
 using Shared.Responses;
 
@@ -13,7 +14,7 @@ public static class GetMoviesEndpoint
             {
                 try
                 {
-                    List<MovieResponse> movies = await movieRepository.GetAllMoviesAsync(cancellationToken);
+                    ImmutableArray<MovieResponse> movies = await movieRepository.GetAllMoviesAsync(cancellationToken);
                     return Results.Ok(movies);
                 }
                 catch (Exception)

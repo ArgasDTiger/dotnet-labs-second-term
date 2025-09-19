@@ -49,12 +49,12 @@ public sealed class Seeder
 
         if (movies is not null)
         {
-            _context.Movies.AddRange(movies);
+            _context.Set<Movie>().AddRange(movies);
         }
 
         if (clients is not null)
         {
-            _context.Clients.AddRange(clients);
+            _context.Set<Client>().AddRange(clients);
         }
     }
 
@@ -68,8 +68,8 @@ public sealed class Seeder
     private async Task SeedClientMovies()
     {
         Random random = new();
-        var clientsIds = await _context.Clients.Select(c => c.Id).ToArrayAsync();
-        var movies = await _context.Movies.ToArrayAsync();
+        var clientsIds = await _context.Set<Client>().Select(c => c.Id).ToArrayAsync();
+        var movies = await _context.Set<Movie>().ToArrayAsync();
 
         foreach (var movie in movies)
         {
@@ -109,6 +109,6 @@ public sealed class Seeder
 
     private bool ShouldSeed()
     {
-        return !(_context.Movies.Any() && !_context.Clients.Any());
+        return !(_context.Set<Movie>().Any() && !_context.Set<Client>().Any());
     }
 }

@@ -8,9 +8,33 @@ public sealed class MovieConfiguration : IEntityTypeConfiguration<Movie>
 {
     public void Configure(EntityTypeBuilder<Movie> builder)
     {
-        builder.
-            HasMany(c => c.ClientMovies).
-            WithOne(cm => cm.Movie).
-            HasForeignKey(cm => cm.MovieId);
+        builder.ToTable("Movies");
+
+        builder
+            .HasKey(m => m.Id);
+
+        builder
+            .HasIndex(m => m.Id);
+
+        builder
+            .Property(m => m.Title)
+            .HasMaxLength(255);
+
+        builder
+            .Property(m => m.Description)
+            .HasMaxLength(500);
+
+        builder
+            .Property(m => m.CollateralValue)
+            .HasColumnType("decimal(5,2)");
+
+        builder
+            .Property(m => m.PricePerDay)
+            .HasColumnType("decimal(5,2)");
+
+        builder
+            .HasMany(c => c.ClientMovies)
+            .WithOne(cm => cm.Movie)
+            .HasForeignKey(cm => cm.MovieId);
     }
 }

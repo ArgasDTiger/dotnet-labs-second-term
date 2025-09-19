@@ -27,7 +27,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "commandLineArgs": "seed"
+      "commandLineArgs": "seed ef"
     },
     "ADO.NET": {
       "commandName": "Project",

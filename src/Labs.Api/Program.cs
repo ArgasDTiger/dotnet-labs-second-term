@@ -15,9 +15,9 @@ if (args.Contains("ado", StringComparer.OrdinalIgnoreCase))
 {
     builder.Services.AddAdoServices();
 } 
-else if (args.Contains("ef", StringComparer.OrdinalIgnoreCase))
+else
 {
-    builder.Services.AddEntityFramework(builder.Configuration);
+    builder.Services.AddEntityFramework();
 }
 
 var app = builder.Build();

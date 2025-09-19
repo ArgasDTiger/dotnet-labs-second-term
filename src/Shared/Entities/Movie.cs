@@ -2,7 +2,7 @@
 
 public sealed class Movie
 {
-    public int Id { get; init; }
+    public Guid Id { get; init; }
     public string Title { get; set; } = null!;
     public string Description { get; set; } = null!;
     public decimal CollateralValue { get; set; }
