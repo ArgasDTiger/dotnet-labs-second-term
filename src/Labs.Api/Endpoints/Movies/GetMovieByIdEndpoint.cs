@@ -18,8 +18,9 @@ public static class GetMovieByIdEndpoint
                     MovieResponse? movie = await movieRepository.GetMovieByIdAsync(id, cancellationToken);
                     return movie is null ? Results.NotFound() : Results.Ok(movie);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    Console.WriteLine(e);
                     return Results.InternalServerError();
                 }
                 

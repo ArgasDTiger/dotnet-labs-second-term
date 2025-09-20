@@ -6,7 +6,7 @@ public static class StringExtension
     {                    
         if(!string.IsNullOrEmpty(str) && str.Length > 1)
         {
-            return char.ToLowerInvariant(str[0]) + str.Substring(1);
+            return "_" + char.ToLowerInvariant(str[0]) + str.Substring(1);
         }
         return "_" + str.ToLowerInvariant();
     }

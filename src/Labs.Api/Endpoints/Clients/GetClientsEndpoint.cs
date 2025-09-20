@@ -14,8 +14,9 @@ public static class GetClientsEndpoint
                 {
                     return Results.Ok(await clientRepository.GetAllClientsAsync(cancellationToken));
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    Console.WriteLine(e);
                     return Results.InternalServerError();
                 }
             });

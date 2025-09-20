@@ -1,70 +1,31 @@
 ﻿using System.Collections.Immutable;
-using System.Data;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Options;
+using AdoNet.DatabaseProvider;
+using Shared.Extensions;
 using Shared.Repositories;
 using Shared.Responses;
-using Shared.Settings;
 
 namespace AdoNet.Repositories;
 
 public sealed class AdoMovieRepository : IMovieRepository
 {
-    private readonly string _connectionString;
+    private readonly IDatabaseConnection _databaseConnection;
 
-    public AdoMovieRepository(IOptions<ConnectionStringSettings> connectionStringSettings)
+    public AdoMovieRepository(IDatabaseConnection databaseConnection)
     {
-        _connectionString = connectionStringSettings.Value.Default;
+        _databaseConnection = databaseConnection;
     }
 
     public async Task<MovieResponse?> GetMovieByIdAsync(Guid movieId, CancellationToken cancellationToken)
     {
-        await using var connection = new SqlConnection(_connectionString);
-        await using var command = new SqlCommand(GetMovieByIdSql, connection);
-
-        command.Parameters.Add("@MovieId", SqlDbType.Int).Value = movieId;
-
-        await connection.OpenAsync(cancellationToken);
-
-        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
-
-        if (!await reader.ReadAsync(cancellationToken))
-        {
-            return null;
-        }
-
-        return GetMovieResponseFromReaderAsync(reader);
+        return await _databaseConnection.QuerySingleAsync<MovieResponse?>(
+            GetMovieByIdSql,
+            parameters: new { MovieId = movieId },
+            cancellationToken);
     }
 
     public async Task<ImmutableArray<MovieResponse>> GetAllMoviesAsync(CancellationToken cancellationToken)
     {
-        await using var connection = new SqlConnection(_connectionString);
-        await using var command = new SqlCommand(GetMoviesSql, connection);
-
-        await connection.OpenAsync(cancellationToken);
-
-        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
-
-        var movies = ImmutableArray.CreateBuilder<MovieResponse>();
-
-        while (await reader.ReadAsync(cancellationToken))
-        {
-            movies.Add(GetMovieResponseFromReaderAsync(reader));
-        }
-
-        return movies.ToImmutable();
-    }
-
-    private static MovieResponse GetMovieResponseFromReaderAsync(SqlDataReader reader)
-    {
-        return new MovieResponse
-        {
-            Id = reader.GetGuid("Id"),
-            Title = reader.GetString("Title"),
-            Description = reader.GetString("Description"),
-            CollateralValue = reader.GetDecimal("CollateralValue"),
-            PricePerDay = reader.GetDecimal("PricePerDay")
-        };
+        return await _databaseConnection.QueryAsync<MovieResponse>(GetMoviesSql, cancellationToken).ToImmutableArrayAsync(cancellationToken);
     }
 
     #region SQL queries

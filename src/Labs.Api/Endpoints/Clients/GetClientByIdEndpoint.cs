@@ -17,8 +17,9 @@ public static class GetClientByIdEndpoint
                     ClientWithMoviesResponse? client = await clientRepository.GetClientByIdAsync(id, cancellationToken);
                     return client is null ? Results.NotFound() : Results.Ok(client);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    Console.WriteLine(e);
                     return Results.InternalServerError();
                 }
             });

@@ -1,7 +1,9 @@
 ﻿using System.Collections.Immutable;
 using System.Data;
+using AdoNet.DatabaseProvider;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
+using Shared.Extensions;
 using Shared.Repositories;
 using Shared.Responses;
 using Shared.Settings;
@@ -10,10 +12,13 @@ namespace AdoNet.Repositories;
 
 public sealed class AdoClientRepository : IClientRepository
 {
+    private readonly IDatabaseConnection _databaseConnection;
     private readonly string _connectionString;
 
-    public AdoClientRepository(IOptions<ConnectionStringSettings> connectionStringSettings)
+    public AdoClientRepository(IOptions<ConnectionStringSettings> connectionStringSettings,
+        IDatabaseConnection databaseConnection)
     {
+        _databaseConnection = databaseConnection;
         _connectionString = connectionStringSettings.Value.Default;
     }
 
@@ -22,7 +27,7 @@ public sealed class AdoClientRepository : IClientRepository
         await using var connection = new SqlConnection(_connectionString);
         await using var command = new SqlCommand(GetClientByIdSql, connection);
 
-        command.Parameters.Add("@ClientId", SqlDbType.Int).Value = clientId;
+        command.Parameters.Add("@ClientId", SqlDbType.UniqueIdentifier).Value = clientId;
 
         await connection.OpenAsync(cancellationToken);
 
@@ -66,33 +71,8 @@ public sealed class AdoClientRepository : IClientRepository
 
     public async Task<ImmutableArray<ClientResponse>> GetAllClientsAsync(CancellationToken cancellationToken)
     {
-        await using var connection = new SqlConnection(_connectionString);
-        await using var command = new SqlCommand(GetClientsSql, connection);
-
-        await connection.OpenAsync(cancellationToken);
-
-        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
-
-        var clients = ImmutableArray.CreateBuilder<ClientResponse>();
-
-        while (await reader.ReadAsync(cancellationToken))
-        {
-            clients.Add(new ClientResponse
-            {
-                Id = reader.GetGuid("Id"),
-                FirstName = reader.GetString("FirstName"),
-                LastName = reader.GetString("LastName"),
-                MiddleName = reader.GetString("MiddleName"),
-                HomeAddress = reader.GetString("HomeAddress"),
-                PhoneNumber = reader.GetString("PhoneNumber"),
-                PassportNumber = reader.GetString("PassportNumber"),
-                PassportSeries = await reader.IsDBNullAsync("PassportSeries", cancellationToken)
-                    ? null
-                    : reader.GetString("PassportSeries")
-            });
-        }
-
-        return clients.ToImmutable();
+        return await _databaseConnection.QueryAsync<ClientResponse>(GetClientsSql, cancellationToken)
+            .ToImmutableArrayAsync(cancellationToken);
     }
 
     #region SQL queries

@@ -17,8 +17,9 @@ public static class GetMoviesEndpoint
                     ImmutableArray<MovieResponse> movies = await movieRepository.GetAllMoviesAsync(cancellationToken);
                     return Results.Ok(movies);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    Console.WriteLine(e);
                     return Results.InternalServerError();
                 }
             });
