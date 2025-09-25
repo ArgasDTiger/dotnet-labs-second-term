@@ -34,7 +34,7 @@ public sealed class AdoClientRepository : IClientRepository
         await using var reader = await command.ExecuteReaderAsync(cancellationToken);
 
         ClientWithMoviesResponse? client = null;
-        var movies = new List<MovieResponse>();
+        var movies = new List<ClientMovieResponse>();
 
         while (await reader.ReadAsync(cancellationToken))
         {
@@ -53,15 +53,14 @@ public sealed class AdoClientRepository : IClientRepository
                 RentedMovies = movies
             };
 
-            if (!await reader.IsDBNullAsync("MovieId", cancellationToken))
+            if (!await reader.IsDBNullAsync("MovieTitle", cancellationToken))
             {
-                movies.Add(new MovieResponse
+                movies.Add(new ClientMovieResponse
                 {
-                    Id = reader.GetGuid("MovieId"),
-                    Title = reader.GetString("MovieTitle"),
-                    Description = reader.GetString("MovieDescription"),
-                    CollateralValue = reader.GetDecimal("CollateralValue"),
-                    PricePerDay = reader.GetDecimal("PricePerDay")
+                    MovieTitle = reader.GetString("MovieTitle"),
+                    StartDate = reader.GetDateTime("StartDate"),
+                    ExpectedReturnDate = reader.GetDateTime("ExpectedReturnDate"),
+                    PricePerDay = reader.GetDecimal("PricePerDay"),
                 });
             }
         }
@@ -81,8 +80,8 @@ public sealed class AdoClientRepository : IClientRepository
                                             SELECT 
                                                 c.Id, c.FirstName, c.MiddleName, c.LastName, c.PhoneNumber, 
                                                 c.HomeAddress, c.PassportSeries, c.PassportNumber,
-                                                m.Id as MovieId, m.Title as MovieTitle, m.Description as MovieDescription, 
-                                                m.CollateralValue, m.PricePerDay
+                                                cm.StartDate, cm.ExpectedReturnDate,
+                                                m.Title as MovieTitle, m.PricePerDay
                                             FROM Clients c
                                             LEFT JOIN ClientMovie cm ON c.Id = cm.ClientId
                                             LEFT JOIN Movies m ON cm.MovieId = m.Id

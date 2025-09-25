@@ -29,13 +29,12 @@ public sealed class EfClientRepository : IClientRepository
             HomeAddress = c.HomeAddress,
             PassportSeries = c.PassportSeries,
             PassportNumber = c.PassportNumber,
-            RentedMovies = c.ClientMovies.Select(cm => new MovieResponse
+            RentedMovies = c.ClientMovies.Select(cm => new ClientMovieResponse
             {
-                Id = cm.MovieId,
-                Title = cm.Movie.Title,
-                Description = cm.Movie.Description,
-                CollateralValue = cm.Movie.CollateralValue,
-                PricePerDay = cm.Movie.PricePerDay,
+                MovieTitle = cm.Movie.Title,
+                StartDate = cm.StartDate,
+                ExpectedReturnDate = cm.ExpectedReturnDate,
+                PricePerDay = cm.Movie.PricePerDay
             }).ToList()
         }).FirstOrDefaultAsync(c => c.Id == clientId, cancellationToken);
     }

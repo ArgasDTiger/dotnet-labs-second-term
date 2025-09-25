@@ -10,5 +10,5 @@ public sealed class ClientWithMoviesResponse
     public required string HomeAddress { get; init; }
     public required string? PassportSeries { get; init; }
     public required string PassportNumber { get; init; }
-    public required IReadOnlyCollection<MovieResponse>? RentedMovies { get; init; }
+    public required IReadOnlyCollection<ClientMovieResponse>? RentedMovies { get; init; }
 }
