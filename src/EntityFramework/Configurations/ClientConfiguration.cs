@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using static Shared.Constants.Entities.ClientConstants.Validation;
 using Shared.Entities;
-using Shared.Extensions;
-using static Shared.Entities.Client;
 
 namespace EntityFramework.Configurations;
 
@@ -20,38 +19,31 @@ public sealed class ClientConfiguration : IEntityTypeConfiguration<Client>
 
         builder
             .Property(c => c.FirstName)
-            .HasField(nameof(Client.FirstName).ToCamelCaseWithUnderscore())
             .HasMaxLength(FirstNameMaxLength);
 
         builder
             .Property(c => c.MiddleName)
-            .HasField(nameof(Client.MiddleName).ToCamelCaseWithUnderscore())
             .HasMaxLength(MiddleNameMaxLength);
 
         builder
             .Property(c => c.LastName)
-            .HasField(nameof(Client.LastName).ToCamelCaseWithUnderscore())
             .HasMaxLength(LastNameMaxLength);
 
         builder
             .Property(c => c.PhoneNumber)
-            .HasField(nameof(Client.PhoneNumber).ToCamelCaseWithUnderscore())
             .HasMaxLength(PhoneNumberMaxLength);
 
         builder
             .Property(c => c.HomeAddress)
-            .HasField(nameof(Client.HomeAddress).ToCamelCaseWithUnderscore())
             .HasMaxLength(HomeAddressMaxLength);
 
         builder
             .Property(c => c.PassportSeries)
-            .HasField(nameof(Client.PassportSeries).ToCamelCaseWithUnderscore())
             .IsRequired(false)
-            .HasMaxLength(PassportSeriesMaxLength);
+            .HasMaxLength(PassportSeriesLength);
 
         builder
             .Property(c => c.PassportNumber)
-            .HasField(nameof(Client.PassportNumber).ToCamelCaseWithUnderscore())
             .HasMaxLength(PassportNumberMaxLength);
 
         builder

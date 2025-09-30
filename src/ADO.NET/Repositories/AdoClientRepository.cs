@@ -3,10 +3,15 @@ using System.Data;
 using AdoNet.DatabaseProvider;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
+using OneOf;
+using OneOf.Types;
+using Shared.Entities;
 using Shared.Extensions;
 using Shared.Repositories;
+using Shared.Requests.Client;
 using Shared.Responses;
 using Shared.Settings;
+using Error = Shared.Models.Error;
 
 namespace AdoNet.Repositories;
 
@@ -73,6 +78,22 @@ public sealed class AdoClientRepository : IClientRepository
         return await _databaseConnection.QueryAsync<ClientResponse>(GetClientsSql, cancellationToken)
             .ToImmutableArrayAsync(cancellationToken);
     }
+
+    public Task<Guid> AddClientAsync(CreateClientRequest client, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<OneOf<None, NotFound>> UpdateClientAsync(Guid clientId, UpdateClientRequest client, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<OneOf<None, NotFound>> DeleteClientAsync(Guid clientId, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
 
     #region SQL queries
 

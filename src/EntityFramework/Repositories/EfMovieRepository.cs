@@ -2,9 +2,13 @@
 using EntityFramework.Data;
 using EntityFramework.Extensions;
 using Microsoft.EntityFrameworkCore;
+using OneOf;
+using OneOf.Types;
 using Shared.Entities;
 using Shared.Repositories;
+using Shared.Requests.Movie;
 using Shared.Responses;
+using Error = Shared.Models.Error;
 
 namespace EntityFramework.Repositories;
 
@@ -39,5 +43,50 @@ public sealed class EfMovieRepository : IMovieRepository
             CollateralValue = m.CollateralValue,
             PricePerDay = m.PricePerDay
         }).ToImmutableArrayAsync(cancellationToken);
+    }
+
+    public async Task<Guid> AddMovieAsync(CreateMovieRequest movie, CancellationToken cancellationToken)
+    {
+        Movie newMovie = new Movie
+        {
+            Id = Guid.NewGuid(),
+            Title = movie.Title,
+            Description = movie.Description,
+            CollateralValue = movie.CollateralValue,
+            PricePerDay = movie.PricePerDay
+        };
+
+        _context.Set<Movie>().Add(newMovie);
+        return await _context.SaveChangesAsync(cancellationToken) > 0
+            ? newMovie.Id
+            : throw new Exception("Failed to add movie.");
+    }
+
+    public async Task<OneOf<None, NotFound>> UpdateMovieAsync(Guid movieId, UpdateMovieRequest client,
+        CancellationToken cancellationToken)
+    {
+        Movie? movieToUpdate = await _context.Set<Movie>().FindAsync([movieId], cancellationToken);
+        if (movieToUpdate is null)
+        {
+            return new NotFound();
+        }
+
+        movieToUpdate.Title = client.Title;
+        movieToUpdate.Description = client.Description;
+        movieToUpdate.CollateralValue = client.CollateralValue;
+        movieToUpdate.PricePerDay = client.PricePerDay;
+        return new None();
+    }
+
+    public async Task<OneOf<None, NotFound>> DeleteMovieAsync(Guid clientId, CancellationToken cancellationToken)
+    {
+        bool movieExists = await _context.Set<Movie>().AnyAsync(m => m.Id == clientId, cancellationToken);
+        if (!movieExists)
+        {
+            return new NotFound();
+        }
+
+        int result = await _context.Set<Movie>().Where(m => m.Id == clientId).ExecuteDeleteAsync(cancellationToken);
+        return result > 0 ? new None() : throw new Exception("Failed to delete movie.");
     }
 }

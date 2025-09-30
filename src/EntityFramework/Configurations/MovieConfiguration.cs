@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Shared.Entities;
+using static Shared.Constants.Entities.MovieConstants.Validation;
 
 namespace EntityFramework.Configurations;
 
@@ -18,11 +19,11 @@ public sealed class MovieConfiguration : IEntityTypeConfiguration<Movie>
 
         builder
             .Property(m => m.Title)
-            .HasMaxLength(255);
+            .HasMaxLength(TitleMaxLength);
 
         builder
             .Property(m => m.Description)
-            .HasMaxLength(500);
+            .HasMaxLength(DescriptionMaxLength);
 
         builder
             .Property(m => m.CollateralValue)
