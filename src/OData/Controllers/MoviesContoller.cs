@@ -1,20 +1,18 @@
 ﻿using Microsoft.AspNetCore.OData.Results;
-
-namespace OData.Controllers;
-
 using EntityFramework.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Deltas;
 using Microsoft.AspNetCore.OData.Query;
-using Microsoft.AspNetCore.OData.Routing.Controllers;
-using Microsoft.EntityFrameworkCore;
 using Shared.Entities;
+using Shared.Requests.Movie;
 
-public sealed class MoviesController : ODataController
+namespace OData.Controllers;
+
+public sealed class MoviesController : BaseController
 {
     private readonly MoviesRentContext _context;
 
-    public MoviesController(MoviesRentContext context)
+    public MoviesController(MoviesRentContext context) : base(context)
     {
         _context = context;
     }
@@ -30,56 +28,47 @@ public sealed class MoviesController : ODataController
         return SingleResult.Create(_context.Set<Movie>().Where(m => m.Id == key));
     }
 
-    public async Task<IActionResult> Post([FromBody] Movie movie)
+    public async Task<IActionResult> Post([FromBody] CreateMovieRequest movie, CancellationToken cancellationToken)
     {
-        _context.Set<Movie>().Add(movie);
-        await _context.SaveChangesAsync();
+        Movie newMovie = new Movie
+        {
+            Id = Guid.NewGuid(),
+            Title = movie.Title,
+            Description = movie.Description,
+            CollateralValue = movie.CollateralValue,
+            PricePerDay = movie.PricePerDay
+        };
+
+        _context.Set<Movie>().Add(newMovie);
+        bool saved = await SaveChangesAsync(cancellationToken);
+        if (!saved) return StatusCode(StatusCodes.Status500InternalServerError);
 
         return Created(movie);
     }
 
-    public async Task<IActionResult> Put([FromRoute] Guid key, [FromBody] Movie movie)
+    public async Task<IActionResult> Put([FromRoute] Guid key, [FromBody] UpdateMovieRequest movie,
+        CancellationToken cancellationToken)
     {
-         if (key != movie.Id)
-         {
-             return BadRequest("Key mismatch");
-         }
-
-         var existingMovie = await _context.Set<Movie>().FindAsync(key);
-         if (existingMovie == null)
-         {
-             return NotFound();
-         }
-
-         existingMovie.Title = movie.Title;
-         existingMovie.Description = movie.Description;
-         existingMovie.CollateralValue = movie.CollateralValue;
-         existingMovie.PricePerDay = movie.PricePerDay;
-
-         try
-         {
-             await _context.SaveChangesAsync();
-         }
-         catch (DbUpdateConcurrencyException)
-         {
-             if (!await MovieExists(key))
-             {
-                 return NotFound();
-             }
-             throw;
-         }
-
-         return Updated(existingMovie);
-    }
-
-    public async Task<IActionResult> Patch([FromRoute] Guid key, [FromBody] Delta<Movie> delta)
-    {
-        if (!ModelState.IsValid)
+        var existingMovie = await _context.Set<Movie>().FindAsync([key], cancellationToken);
+        if (existingMovie == null)
         {
-            return BadRequest(ModelState);
+            return NotFound();
         }
 
-        var movie = await _context.Set<Movie>().FindAsync(key);
+        existingMovie.Title = movie.Title;
+        existingMovie.Description = movie.Description;
+        existingMovie.CollateralValue = movie.CollateralValue;
+        existingMovie.PricePerDay = movie.PricePerDay;
+
+        bool saved = await SaveChangesAsync(cancellationToken);
+        if (!saved) return StatusCode(StatusCodes.Status500InternalServerError);
+        return Updated(existingMovie);
+    }
+
+    public async Task<IActionResult> Patch([FromRoute] Guid key, [FromBody] Delta<Movie> delta,
+        CancellationToken cancellationToken)
+    {
+        var movie = await _context.Set<Movie>().FindAsync([key], cancellationToken);
         if (movie == null)
         {
             return NotFound();
@@ -87,38 +76,23 @@ public sealed class MoviesController : ODataController
 
         delta.Patch(movie);
 
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!await MovieExists(key))
-            {
-                return NotFound();
-            }
-            throw;
-        }
-
+        bool saved = await SaveChangesAsync(cancellationToken);
+        if (!saved) return StatusCode(StatusCodes.Status500InternalServerError);
         return Updated(movie);
     }
 
-    public async Task<IActionResult> Delete([FromRoute] Guid key)
+    public async Task<IActionResult> Delete([FromRoute] Guid key, CancellationToken cancellationToken)
     {
-        var movie = await _context.Set<Movie>().FindAsync(key);
+        var movie = await _context.Set<Movie>().FindAsync([key], cancellationToken);
         if (movie == null)
         {
             return NotFound();
         }
 
         _context.Set<Movie>().Remove(movie);
-        await _context.SaveChangesAsync();
+        bool saved = await SaveChangesAsync(cancellationToken);
+        if (!saved) return StatusCode(StatusCodes.Status500InternalServerError);
 
         return NoContent();
-    }
-
-    private async Task<bool> MovieExists(Guid key)
-    {
-        return await _context.Set<Movie>().AnyAsync(m => m.Id == key);
     }
 }

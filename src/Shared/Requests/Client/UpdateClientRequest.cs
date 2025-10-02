@@ -18,7 +18,9 @@ public sealed class UpdateClientRequest
     public string LastName { get; init; } = null!;
 
     [Required(AllowEmptyStrings = false)]
+    [MinLength(PhoneNumberMinLength)]
     [MaxLength(PhoneNumberMaxLength)]
+    [Phone]
     public string PhoneNumber { get; init; } = null!;
 
     [Required(AllowEmptyStrings = false)]

@@ -1,19 +1,18 @@
 ﻿using EntityFramework.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OData.Deltas;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Results;
-using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Shared.Entities;
+using Shared.Requests.ClientMovie;
 
 namespace OData.Controllers;
 
-public sealed class ClientMoviesController : ODataController
+public sealed class ClientMoviesController : BaseController
 {
     private readonly MoviesRentContext _context;
 
-    public ClientMoviesController(MoviesRentContext context)
+    public ClientMoviesController(MoviesRentContext context) : base(context)
     {
         _context = context;
     }
@@ -29,10 +28,11 @@ public sealed class ClientMoviesController : ODataController
         return SingleResult.Create(_context.Set<ClientMovie>().Where(cm => cm.Id == key));
     }
 
-    public async Task<IActionResult> Post([FromBody] ClientMovie clientMovie)
+    public async Task<IActionResult> Post([FromBody] CreateClientMovieRequest clientMovie,
+        CancellationToken cancellationToken)
     {
-        bool clientExists = await _context.Set<Client>().AnyAsync(c => c.Id == clientMovie.ClientId);
-        bool movieExists = await _context.Set<Movie>().AnyAsync(m => m.Id == clientMovie.MovieId);
+        bool clientExists = await _context.Set<Client>().AnyAsync(c => c.Id == clientMovie.ClientId, cancellationToken);
+        bool movieExists = await _context.Set<Movie>().AnyAsync(m => m.Id == clientMovie.MovieId, cancellationToken);
 
         if (!clientExists)
         {
@@ -44,110 +44,51 @@ public sealed class ClientMoviesController : ODataController
             return BadRequest("Movie does not exist");
         }
 
-        _context.Set<ClientMovie>().Add(clientMovie);
-        await _context.SaveChangesAsync();
+        ClientMovie newClientMovie = new ClientMovie
+        {
+            Id = Guid.NewGuid(),
+            MovieId = clientMovie.MovieId,
+            ClientId = clientMovie.ClientId,
+            ExpectedReturnDate = clientMovie.ExpectedReturnDate,
+            StartDate = clientMovie.StartDate
+        };
+
+        _context.Set<ClientMovie>().Add(newClientMovie);
+        bool saved = await SaveChangesAsync(cancellationToken);
+        if (!saved) return StatusCode(StatusCodes.Status500InternalServerError);
 
         return Created(clientMovie);
     }
 
-    public async Task<IActionResult> Put([FromRoute] Guid key, [FromBody] ClientMovie clientMovie)
+    public async Task<IActionResult> Put([FromRoute] Guid key, [FromBody] UpdateClientMovieRequest clientMovie,
+        CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
-        if (key != clientMovie.Id)
-        {
-            return BadRequest("Key mismatch");
-        }
-
-        var existingClientMovie = await _context.Set<ClientMovie>().FindAsync(key);
+        var existingClientMovie = await _context.Set<ClientMovie>().FindAsync([key], cancellationToken);
         if (existingClientMovie == null)
         {
             return NotFound();
         }
 
-        // Validate that Client and Movie exist
-        var clientExists = await _context.Set<Client>().AnyAsync(c => c.Id == clientMovie.ClientId);
-        var movieExists = await _context.Set<Movie>().AnyAsync(m => m.Id == clientMovie.MovieId);
-
-        if (!clientExists)
-        {
-            return BadRequest("Client does not exist");
-        }
-
-        if (!movieExists)
-        {
-            return BadRequest("Movie does not exist");
-        }
-
         existingClientMovie.StartDate = clientMovie.StartDate;
         existingClientMovie.ExpectedReturnDate = clientMovie.ExpectedReturnDate;
 
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!await ClientMovieExists(key))
-            {
-                return NotFound();
-            }
-            throw;
-        }
-
+        bool saved = await SaveChangesAsync(cancellationToken);
+        if (!saved) return StatusCode(StatusCodes.Status500InternalServerError);
         return Updated(existingClientMovie);
     }
 
-    public async Task<IActionResult> Patch([FromRoute] Guid key, [FromBody] Delta<ClientMovie> delta)
+    public async Task<IActionResult> Delete([FromRoute] Guid key, CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
-        var clientMovie = await _context.Set<ClientMovie>().FindAsync(key);
-        if (clientMovie == null)
-        {
-            return NotFound();
-        }
-
-        delta.Patch(clientMovie);
-
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!await ClientMovieExists(key))
-            {
-                return NotFound();
-            }
-            throw;
-        }
-
-        return Updated(clientMovie);
-    }
-
-    public async Task<IActionResult> Delete([FromRoute] Guid key)
-    {
-        var clientMovie = await _context.Set<ClientMovie>().FindAsync(key);
+        var clientMovie = await _context.Set<ClientMovie>().FindAsync([key], cancellationToken);
         if (clientMovie == null)
         {
             return NotFound();
         }
 
         _context.Set<ClientMovie>().Remove(clientMovie);
-        await _context.SaveChangesAsync();
+        bool saved = await SaveChangesAsync(cancellationToken);
+        if (!saved) return StatusCode(StatusCodes.Status500InternalServerError);
 
         return NoContent();
-    }
-
-    private async Task<bool> ClientMovieExists(Guid key)
-    {
-        return await _context.Set<ClientMovie>().AnyAsync(cm => cm.Id == key);
     }
 }

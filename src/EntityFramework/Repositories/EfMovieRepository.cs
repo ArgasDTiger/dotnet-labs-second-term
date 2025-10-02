@@ -8,7 +8,6 @@ using Shared.Entities;
 using Shared.Repositories;
 using Shared.Requests.Movie;
 using Shared.Responses;
-using Error = Shared.Models.Error;
 
 namespace EntityFramework.Repositories;
 

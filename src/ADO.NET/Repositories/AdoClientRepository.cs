@@ -5,13 +5,11 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
 using OneOf;
 using OneOf.Types;
-using Shared.Entities;
 using Shared.Extensions;
 using Shared.Repositories;
 using Shared.Requests.Client;
 using Shared.Responses;
 using Shared.Settings;
-using Error = Shared.Models.Error;
 
 namespace AdoNet.Repositories;
 

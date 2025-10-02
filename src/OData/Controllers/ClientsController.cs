@@ -3,17 +3,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Deltas;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Results;
-using Microsoft.AspNetCore.OData.Routing.Controllers;
-using Microsoft.EntityFrameworkCore;
 using Shared.Entities;
+using Shared.Requests.Client;
 
 namespace OData.Controllers;
 
-public sealed class ClientsController : ODataController
+public sealed class ClientsController : BaseController
 {
     private readonly MoviesRentContext _context;
 
-    public ClientsController(MoviesRentContext context)
+    public ClientsController(MoviesRentContext context) : base(context)
     {
         _context = context;
     }
@@ -30,22 +29,31 @@ public sealed class ClientsController : ODataController
         return SingleResult.Create(_context.Set<Client>().Where(c => c.Id == key));
     }
 
-    public async Task<IActionResult> Post([FromBody] Client client)
+    public async Task<IActionResult> Post([FromBody] CreateClientRequest client, CancellationToken cancellationToken)
     {
-        _context.Set<Client>().Add(client);
-        await _context.SaveChangesAsync();
+        Client newClient = new Client
+        {
+            Id = Guid.NewGuid(),
+            FirstName = client.FirstName,
+            MiddleName = client.MiddleName,
+            LastName = client.LastName,
+            PhoneNumber = client.PhoneNumber,
+            HomeAddress = client.HomeAddress,
+            PassportSeries = client.PassportSeries,
+            PassportNumber = client.PassportNumber
+        };
+
+        _context.Set<Client>().Add(newClient);
+        bool saved = await SaveChangesAsync(cancellationToken);
+        if (!saved) return StatusCode(StatusCodes.Status500InternalServerError);
 
         return Created(client);
     }
 
-    public async Task<IActionResult> Put([FromRoute] Guid key, [FromBody] Client client)
+    public async Task<IActionResult> Put([FromRoute] Guid key, [FromBody] UpdateClientRequest client,
+        CancellationToken cancellationToken)
     {
-        if (key != client.Id)
-        {
-            return BadRequest("Key mismatch");
-        }
-
-        var existingClient = await _context.Set<Client>().FindAsync(key);
+        var existingClient = await _context.Set<Client>().FindAsync([key], cancellationToken);
         if (existingClient == null)
         {
             return NotFound();
@@ -59,25 +67,15 @@ public sealed class ClientsController : ODataController
         existingClient.PassportSeries = client.PassportSeries;
         existingClient.PassportNumber = client.PassportNumber;
 
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!await ClientExists(key))
-            {
-                return NotFound();
-            }
-            throw;
-        }
-
+        bool saved = await SaveChangesAsync(cancellationToken);
+        if (!saved) return StatusCode(StatusCodes.Status500InternalServerError);
         return Updated(existingClient);
     }
 
-    public async Task<IActionResult> Patch([FromRoute] Guid key, [FromBody] Delta<Client> delta)
+    public async Task<IActionResult> Patch([FromRoute] Guid key, [FromBody] Delta<Client> delta,
+        CancellationToken cancellationToken)
     {
-        var client = await _context.Set<Client>().FindAsync(key);
+        var client = await _context.Set<Client>().FindAsync([key], cancellationToken);
         if (client == null)
         {
             return NotFound();
@@ -85,38 +83,23 @@ public sealed class ClientsController : ODataController
 
         delta.Patch(client);
 
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!await ClientExists(key))
-            {
-                return NotFound();
-            }
-            throw;
-        }
-
+        bool saved = await SaveChangesAsync(cancellationToken);
+        if (!saved) return StatusCode(StatusCodes.Status500InternalServerError);
         return Updated(client);
     }
 
-    public async Task<IActionResult> Delete([FromRoute] Guid key)
+    public async Task<IActionResult> Delete([FromRoute] Guid key, CancellationToken cancellationToken)
     {
-        var client = await _context.Set<Client>().FindAsync(key);
+        var client = await _context.Set<Client>().FindAsync([key], cancellationToken);
         if (client == null)
         {
             return NotFound();
         }
 
         _context.Set<Client>().Remove(client);
-        await _context.SaveChangesAsync();
+        bool saved = await SaveChangesAsync(cancellationToken);
+        if (!saved) return StatusCode(StatusCodes.Status500InternalServerError);
 
         return NoContent();
-    }
-
-    private async Task<bool> ClientExists(Guid key)
-    {
-        return await _context.Set<Client>().AnyAsync(c => c.Id == key);
     }
 }

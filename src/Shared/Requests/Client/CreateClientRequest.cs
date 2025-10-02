@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using OneOf.Types;
 using static Shared.Constants.Entities.ClientConstants.Validation;
 
 namespace Shared.Requests.Client;

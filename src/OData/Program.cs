@@ -13,9 +13,16 @@ builder.Services.AddControllers()
     .AddOData(opt =>
     {
         var odataBuilder = new ODataConventionModelBuilder();
-        odataBuilder.EntitySet<Client>("Clients");
-        odataBuilder.EntitySet<Movie>("Movies");
-        odataBuilder.EntitySet<ClientMovie>("ClientMovies");
+        var clientsEntity = odataBuilder.EntitySet<Client>("Clients").EntityType;
+        clientsEntity.Property(c => c.Id).IsNotNavigable();
+        // clientsEntity.Property(c => c.ClientMovies).IsNotNavigable();
+
+        var movieEntity = odataBuilder.EntitySet<Movie>("Movies").EntityType;
+        movieEntity.Property(m => m.Id).IsNotNavigable();
+        // movieEntity.Property(m => m.ClientMovies).IsNotNavigable();
+
+        odataBuilder.EntitySet<ClientMovie>("ClientMovies").EntityType
+            .Property(m => m.Id).IsNotNavigable();
         opt.AddRouteComponents("odata", odataBuilder.GetEdmModel())
             .Select()
             .Filter()
