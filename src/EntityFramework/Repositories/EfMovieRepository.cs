@@ -121,7 +121,7 @@ public sealed class EfMovieRepository : IMovieRepository
     {
         ClientMovie? rentedMovie = await _context.Set<ClientMovie>()
             .FirstOrDefaultAsync(cm =>
-                    cm.ClientId == request.ClientId && cm.MovieId == request.MovieId && cm.ReturnDate != null,
+                    cm.ClientId == request.ClientId && cm.MovieId == request.MovieId && cm.ReturnDate == null,
                 cancellationToken);
         if (rentedMovie is null)
         {

@@ -103,21 +103,21 @@ nav .navbar-brand:hover, nav .nav-link:hover {
   font-size: 1em;
 }
 
-.movie-card .prices {
+.movie-card .subject-data {
   padding-left: 0;
   margin-top: 0.7em;
 }
 
-.movie-card .prices .price-item {
+.movie-card .subject-data .subject-item {
   list-style-type: none;
   padding-left: 0;
   display: flex;
 }
-.movie-card .prices .price-item .header {
+.movie-card .subject-data .subject-item .header {
   font-weight: bold;
 }
 
-.movie-card .prices .price-item .price {
+.movie-card .subject-data .subject-item .value {
   margin-left: 0.5em;
 }
 
@@ -193,6 +193,10 @@ nav .navbar-brand:hover, nav .nav-link:hover {
 
 .btn-danger:hover {
   background-color: var(--btn-danger-background-hover);
+}
+
+a {
+  text-decoration: none;
 }
 
 /*

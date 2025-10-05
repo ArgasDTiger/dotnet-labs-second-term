@@ -64,6 +64,11 @@ public sealed class AdoClientRepository : IClientRepository
                     StartDate = reader.GetDateTime("StartDate"),
                     ExpectedReturnDate = reader.GetDateTime("ExpectedReturnDate"),
                     PricePerDay = reader.GetDecimal("PricePerDay"),
+                    ReturnedDate = await reader.IsDBNullAsync("ReturnedDate",
+                        cancellationToken)
+                        ? null
+                        : reader.GetDateTime("ReturnedDate"),
+                    MovieId = reader.GetGuid("MovieId")
                 });
             }
         }

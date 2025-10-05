@@ -37,7 +37,9 @@ public sealed class EfClientRepository : IClientRepository
                 MovieTitle = cm.Movie.Title,
                 StartDate = cm.StartDate,
                 ExpectedReturnDate = cm.ExpectedReturnDate,
-                PricePerDay = cm.Movie.PricePerDay
+                ReturnedDate = cm.ReturnDate,
+                PricePerDay = cm.Movie.PricePerDay,
+                MovieId = cm.MovieId
             }).ToList()
         }).FirstOrDefaultAsync(c => c.Id == clientId, cancellationToken);
     }

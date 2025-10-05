@@ -1,0 +1,120 @@
+﻿@page
+@model Details
+@{
+    ViewData["Title"] = $"{Model.Client?.LastName} {Model.Client?.FirstName}";
+}
+@Html.AntiForgeryToken()
+
+@if (Model.Client is not null)
+{
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col">
+                <a asp-page="./Index" class="btn-secondary">← Back to Clients</a>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h1 class="card-title">@Model.Client.LastName @Model.Client.FirstName @Model.Client.MiddleName</h1>
+                <hr/>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Phone Number:</strong> @Model.Client.PhoneNumber</p>
+                        <p><strong>Home Address:</strong> @Model.Client.HomeAddress</p>
+                    </div>
+                    <div class="col-md-6">
+                        @if (Model.Client.PassportSeries is not null)
+                        {
+                            <p><strong>Passport Series:</strong> @Model.Client.PassportSeries</p>
+                        }
+                        <p><strong>Passport Number:</strong> @Model.Client.PassportNumber</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.Client.RentedMovies?.Count > 0)
+        {
+            <h2>Rented Movies</h2>
+            <div class="card-container">
+                @foreach (var movie in Model.Client.RentedMovies)
+                {
+                    <div class="movie-card">
+                        <div class="title">@movie.MovieTitle</div>
+                        <ul class="subject-data">
+                            <li class="subject-item">
+                                <div class="header">Expected return date:</div>
+                                <div class="value">@movie.ExpectedReturnDate.ToString("yyyy-MM-dd")</div>
+                            </li>
+                            <li class="subject-item">
+                                <div class="header">Price per day:</div>
+                                <div class="value">@movie.PricePerDay.ToString("C")</div>
+                            </li>
+                            @if (movie.ReturnedDate is not null)
+                            {
+                                <li class="subject-item">
+                                    <div class="header">Returned date:</div>
+                                    <div class="value">@movie.ReturnedDate.Value.ToString("yyyy-MM-dd")</div>
+                                </li>
+                            }
+                            @if (movie.ReturnedDate is null)
+                            {
+                                <li>
+                                    <button data-movie-id="@movie.MovieId" data-client-id="@Model.Client.Id"
+                                            class="btn-primary btn-return">
+                                        Return
+                                    </button>
+                                </li>
+                            }
+
+                        </ul>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                This client has no rented movies.
+            </div>
+        }
+    </div>
+}
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.btn-return').forEach(button => {
+            button.addEventListener('click', async function () {
+                const movieId = this.getAttribute('data-movie-id');
+                const clientId = this.getAttribute('data-client-id');
+
+                const request = {
+                    movieId: movieId,
+                    clientId: clientId,
+                };
+
+                try {
+                    const response = await fetch(`?handler=ReturnMovie`, {
+                        method: 'POST',
+                        headers: {
+                            'content-type': 'application/json',
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value 
+                        },
+                        body: JSON.stringify(request),
+                    });
+
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        const error = await response.text();
+                        alert('Error: ' + error);
+                    }
+                } catch (error) {
+                    alert('Error: ' + error.message);
+                }
+            });
+        });
+    </script>
+}

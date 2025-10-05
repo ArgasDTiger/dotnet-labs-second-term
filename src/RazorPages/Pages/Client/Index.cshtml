@@ -1,0 +1,276 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Clients";
+}
+<div class="card-container">
+    @foreach (var client in Model.Clients)
+    {
+        <div class="movie-card">
+            <div class="title">
+                @client.LastName @client.FirstName @client.MiddleName
+            </div>
+            <ul class="subject-data">
+                <li class="subject-item">
+                    <div class="header">Phone number:</div>
+                    <div class="value">@client.PhoneNumber</div>
+                </li>
+                <li class="subject-item">
+                    <div class="header">Home address:</div>
+                    <div class="value">@client.HomeAddress</div>
+                </li>
+                <li class="subject-item">
+                    <div class="header">Passport number:</div>
+                    <div class="value">@client.PassportNumber</div>
+                </li>
+                @if (client.PassportSeries is not null)
+                {
+                    <li>
+                        <div class="header">Passport series:</div>
+                        <div class="price">@client.PassportSeries</div>
+                    </li>
+                }
+            </ul>
+            <div class="actions-container">
+                <a class="btn-primary" asp-page="/Client/Details" asp-route-id="@client.Id">Details</a>
+                <button
+                    class="btn-secondary"
+                    type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editModal"
+                    data-client-id="@client.Id"
+                    data-client-firstname="@client.FirstName"
+                    data-client-middlename="@client.MiddleName"
+                    data-client-lastname="@client.LastName"
+                    data-client-phone="@client.PhoneNumber"
+                    data-client-address="@client.HomeAddress"
+                    data-client-passport-series="@client.PassportSeries"
+                    data-client-passport-number="@client.PassportNumber">
+                    Edit
+                </button>
+                <button class="btn-danger" type="button" data-client-id="@client.Id">
+                    Delete
+                </button>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="actions-container">
+    <button class="btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#createModal">+ Create Client
+    </button>
+</div>
+
+<div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="Create" id="createForm">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="createModalLabel">Create Client</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-section">
+                        <label for="createFirstName">First Name:</label>
+                        <input id="createFirstName" name="firstName" type="text" required maxlength="100"/>
+                    </div>
+                    <div class="input-section">
+                        <label for="createMiddleName">Middle Name:</label>
+                        <input id="createMiddleName" name="middleName" type="text" required maxlength="100"/>
+                    </div>
+                    <div class="input-section">
+                        <label for="createLastName">Last Name:</label>
+                        <input id="createLastName" name="lastName" type="text" required maxlength="100"/>
+                    </div>
+                    <div class="input-section">
+                        <label for="createPhoneNumber">Phone Number:</label>
+                        <input id="createPhoneNumber" name="phoneNumber" type="tel" required maxlength="20"/>
+                    </div>
+                    <div class="input-section">
+                        <label for="createHomeAddress">Home Address:</label>
+                        <textarea id="createHomeAddress" name="homeAddress" rows="3" required maxlength="500"></textarea>
+                    </div>
+                    <div class="input-section">
+                        <label for="createPassportSeries">Passport Series (Optional):</label>
+                        <input id="createPassportSeries" name="passportSeries" type="text" maxlength="10"/>
+                    </div>
+                    <div class="input-section">
+                        <label for="createPassportNumber">Passport Number:</label>
+                        <input id="createPassportNumber" name="passportNumber" type="text" required maxlength="20"/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn-primary">Create Client</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="Update" id="editForm">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="editModalLabel">Edit Client</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editClientId" name="clientId"/>
+                    <div class="input-section">
+                        <label for="editFirstName">First Name:</label>
+                        <input id="editFirstName" name="firstName" type="text" required maxlength="100"/>
+                    </div>
+                    <div class="input-section">
+                        <label for="editMiddleName">Middle Name:</label>
+                        <input id="editMiddleName" name="middleName" type="text" required maxlength="100"/>
+                    </div>
+                    <div class="input-section">
+                        <label for="editLastName">Last Name:</label>
+                        <input id="editLastName" name="lastName" type="text" required maxlength="100"/>
+                    </div>
+                    <div class="input-section">
+                        <label for="editPhoneNumber">Phone Number:</label>
+                        <input id="editPhoneNumber" name="phoneNumber" type="tel" required maxlength="20"/>
+                    </div>
+                    <div class="input-section">
+                        <label for="editHomeAddress">Home Address:</label>
+                        <textarea id="editHomeAddress" name="homeAddress" rows="3" required maxlength="500"></textarea>
+                    </div>
+                    <div class="input-section">
+                        <label for="editPassportSeries">Passport Series (Optional):</label>
+                        <input id="editPassportSeries" name="passportSeries" type="text" maxlength="10"/>
+                    </div>
+                    <div class="input-section">
+                        <label for="editPassportNumber">Passport Number:</label>
+                        <input id="editPassportNumber" name="passportNumber" type="text" required maxlength="20"/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn-primary">Update Client</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('editModal').addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            document.getElementById('editClientId').value = button.getAttribute('data-client-id');
+            document.getElementById('editFirstName').value = button.getAttribute('data-client-firstname');
+            document.getElementById('editMiddleName').value = button.getAttribute('data-client-middlename');
+            document.getElementById('editLastName').value = button.getAttribute('data-client-lastname');
+            document.getElementById('editPhoneNumber').value = button.getAttribute('data-client-phone');
+            document.getElementById('editHomeAddress').value = button.getAttribute('data-client-address');
+            document.getElementById('editPassportSeries').value = button.getAttribute('data-client-passport-series') || '';
+            document.getElementById('editPassportNumber').value = button.getAttribute('data-client-passport-number');
+        });
+
+        document.getElementById('createModal').addEventListener('show.bs.modal', function () {
+            document.getElementById('createForm').reset();
+        });
+
+        document.getElementById('createForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const request = {
+                firstName: document.getElementById('createFirstName').value,
+                middleName: document.getElementById('createMiddleName').value,
+                lastName: document.getElementById('createLastName').value,
+                phoneNumber: document.getElementById('createPhoneNumber').value,
+                homeAddress: document.getElementById('createHomeAddress').value,
+                passportSeries: document.getElementById('createPassportSeries').value || null,
+                passportNumber: document.getElementById('createPassportNumber').value
+            };
+
+            try {
+                const response = await fetch('?handler=Create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify(request)
+                });
+
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    const error = await response.text();
+                    alert('Error: ' + error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+
+        document.getElementById('editForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const clientId = document.getElementById('editClientId').value;
+            const request = {
+                firstName: document.getElementById('editFirstName').value,
+                middleName: document.getElementById('editMiddleName').value,
+                lastName: document.getElementById('editLastName').value,
+                phoneNumber: document.getElementById('editPhoneNumber').value,
+                homeAddress: document.getElementById('editHomeAddress').value,
+                passportSeries: document.getElementById('editPassportSeries').value || null,
+                passportNumber: document.getElementById('editPassportNumber').value
+            };
+
+            try {
+                const response = await fetch(`?handler=Update&clientId=${clientId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify(request)
+                });
+
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    const error = await response.text();
+                    alert('Error: ' + error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+
+        document.querySelectorAll('.btn-danger').forEach(button => {
+            button.addEventListener('click', async function () {
+                const clientCard = this.closest('.movie-card');
+                const clientName = clientCard.querySelector('.title').textContent.trim();
+                const clientId = this.getAttribute('data-client-id');
+
+                if (!confirm(`Are you sure you want to delete "${clientName}"?`)) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`?handler=Delete&clientId=${clientId}`, {
+                        method: 'POST',
+                        headers: {
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                        }
+                    });
+
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        const error = await response.text();
+                        alert('Error: ' + error);
+                    }
+                } catch (error) {
+                    alert('Error: ' + error.message);
+                }
+            });
+        });
+    </script>
+}
