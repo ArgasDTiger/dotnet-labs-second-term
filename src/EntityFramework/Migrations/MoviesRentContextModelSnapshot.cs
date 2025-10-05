@@ -84,6 +84,9 @@ namespace EntityFramework.Migrations
                     b.Property<Guid>("MovieId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("ReturnDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 

@@ -50,7 +50,8 @@ public sealed class ClientMoviesController : BaseController
             MovieId = clientMovie.MovieId,
             ClientId = clientMovie.ClientId,
             ExpectedReturnDate = clientMovie.ExpectedReturnDate,
-            StartDate = clientMovie.StartDate
+            StartDate = clientMovie.StartDate,
+            ReturnDate = null
         };
 
         _context.Set<ClientMovie>().Add(newClientMovie);

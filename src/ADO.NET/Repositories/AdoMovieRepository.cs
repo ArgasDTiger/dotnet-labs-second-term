@@ -3,7 +3,9 @@ using AdoNet.DatabaseProvider;
 using OneOf;
 using OneOf.Types;
 using Shared.Extensions;
+using Shared.Models;
 using Shared.Repositories;
+using Shared.Requests.ClientMovie;
 using Shared.Requests.Movie;
 using Shared.Responses;
 
@@ -42,6 +44,16 @@ public sealed class AdoMovieRepository : IMovieRepository
     }
 
     public Task<OneOf<None, NotFound>> DeleteMovieAsync(Guid movieId, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<OneOf<None, ErrorMessage>> RentMovieAsync(RentMovieRequest request, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<OneOf<None, ErrorMessage>> ReturnMovieAsync(ReturnMovieRequest request, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }

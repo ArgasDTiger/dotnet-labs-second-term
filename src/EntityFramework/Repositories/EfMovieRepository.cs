@@ -5,7 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using OneOf;
 using OneOf.Types;
 using Shared.Entities;
+using Shared.Models;
 using Shared.Repositories;
+using Shared.Requests.ClientMovie;
 using Shared.Requests.Movie;
 using Shared.Responses;
 
@@ -74,6 +76,8 @@ public sealed class EfMovieRepository : IMovieRepository
         movieToUpdate.Description = client.Description;
         movieToUpdate.CollateralValue = client.CollateralValue;
         movieToUpdate.PricePerDay = client.PricePerDay;
+        
+        await _context.SaveChangesAsync(cancellationToken);
         return new None();
     }
 
@@ -87,5 +91,66 @@ public sealed class EfMovieRepository : IMovieRepository
 
         int result = await _context.Set<Movie>().Where(m => m.Id == clientId).ExecuteDeleteAsync(cancellationToken);
         return result > 0 ? new None() : throw new Exception("Failed to delete movie.");
+    }
+
+    public async Task<OneOf<None, ErrorMessage>> RentMovieAsync(RentMovieRequest request,
+        CancellationToken cancellationToken)
+    {
+        bool canRent = await CanClientRentMovie(request, cancellationToken);
+        if (!canRent)
+        {
+            return new ErrorMessage("Client cannot rent this movie.");
+        }
+
+        ClientMovie newClientMovie = new ClientMovie
+        {
+            ClientId = request.ClientId,
+            MovieId = request.MovieId,
+            ExpectedReturnDate = request.ExpectedReturnDate,
+            StartDate = DateTime.UtcNow
+        };
+
+        _context.Set<ClientMovie>().Add(newClientMovie);
+        return await _context.SaveChangesAsync(cancellationToken) > 0
+            ? new None()
+            : throw new Exception("Failed to rent movie.");
+    }
+
+    public async Task<OneOf<None, ErrorMessage>> ReturnMovieAsync(ReturnMovieRequest request,
+        CancellationToken cancellationToken)
+    {
+        ClientMovie? rentedMovie = await _context.Set<ClientMovie>()
+            .FirstOrDefaultAsync(cm =>
+                    cm.ClientId == request.ClientId && cm.MovieId == request.MovieId && cm.ReturnDate != null,
+                cancellationToken);
+        if (rentedMovie is null)
+        {
+            return new ErrorMessage("Movie is not rented.");
+        }
+        
+        rentedMovie.ReturnDate = DateTime.UtcNow;
+        return await _context.SaveChangesAsync(cancellationToken) > 0
+            ? new None()
+            : throw new Exception("Failed to return movie.");
+    }
+
+    private async Task<bool> CanClientRentMovie(RentMovieRequest request, CancellationToken cancellationToken)
+    {
+        var validationResult = await _context.Set<Client>()
+            .Where(c => c.Id == request.ClientId)
+            .Select(c => new
+            {
+                ClientExists = true,
+                MovieExists = _context.Set<Movie>().Any(m => m.Id == request.MovieId),
+                HasOverlap = _context.Set<ClientMovie>().Any(cm =>
+                    cm.ClientId == request.ClientId
+                    && cm.MovieId == request.MovieId
+                    && cm.ReturnDate != null)
+            })
+            .FirstOrDefaultAsync(cancellationToken);
+
+        return validationResult != null
+               && validationResult.MovieExists
+               && !validationResult.HasOverlap;
     }
 }

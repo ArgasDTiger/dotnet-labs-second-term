@@ -1,0 +1,380 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Movies";
+}
+<div class="card-container">
+    @foreach (var movie in Model.Movies)
+    {
+        <div class="movie-card">
+            <div class="title">
+                @movie.Title
+            </div>
+            <div class="description">
+                @movie.Description
+            </div>
+            <ul class="prices">
+                <li class="price-item">
+                    <div class="header">Price per day:</div>
+                    <div class="price">@movie.PricePerDay</div>
+                </li>
+                <li class="price-item">
+                    <div class="header">Collateral value:</div>
+                    <div class="price">@movie.CollateralValue</div>
+                </li>
+            </ul>
+            <div class="actions-container">
+                <button
+                    class="btn-primary"
+                    type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#rentModal"
+                    data-movie-id="@movie.Id"
+                    data-movie-title="@movie.Title"
+                    data-movie-price="@movie.PricePerDay"
+                    data-movie-collateral="@movie.CollateralValue">
+                    Rent
+                </button>
+                <button
+                    class="btn-secondary"
+                    type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editModal"
+                    data-movie-id="@movie.Id"
+                    data-movie-title="@movie.Title"
+                    data-movie-description="@movie.Description"
+                    data-movie-price="@movie.PricePerDay.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                    data-movie-collateral="@movie.CollateralValue.ToString(System.Globalization.CultureInfo.InvariantCulture)">
+                    Edit
+                </button>
+                <button class="btn-danger" type="button" data-movie-id="@movie.Id">
+                    Delete
+                </button>
+            </div>
+        </div>
+    }
+</div>
+
+
+<div class="actions-container">
+    <button class="btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#createModal">+ Create movie
+    </button>
+</div>
+
+
+<div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="Create" id="createForm">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="createModalLabel">Create Movie</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-section">
+                        <label for="createTitle">Title:</label>
+                        <input id="createTitle" name="title" type="text" required maxlength="200"/>
+                    </div>
+                    <div class="input-section">
+                        <label for="createDescription">Description:</label>
+                        <textarea id="createDescription" name="description" rows="4" required
+                                  maxlength="1000"></textarea>
+                    </div>
+                    <div class="input-section">
+                        <label for="createCollateralValue">Collateral Value:</label>
+                        <input id="createCollateralValue" name="collateralValue" type="number" step="0.01" min="0"
+                               required/>
+                    </div>
+                    <div class="input-section">
+                        <label for="createPricePerDay">Price Per Day:</label>
+                        <input id="createPricePerDay" name="pricePerDay" type="number" step="0.01" min="0" required/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn-primary">Create Movie</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="Update" id="editForm">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="editModalLabel">Edit Movie</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editMovieId" name="movieId"/>
+                    <div class="input-section">
+                        <label for="editTitle">Title:</label>
+                        <input id="editTitle" name="title" type="text" required maxlength="200"/>
+                    </div>
+                    <div class="input-section">
+                        <label for="editDescription">Description:</label>
+                        <textarea id="editDescription" name="description" rows="4" required maxlength="1000"></textarea>
+                    </div>
+                    <div class="input-section">
+                        <label for="editCollateralValue">Collateral Value:</label>
+                        <input id="editCollateralValue" name="collateralValue" type="number" step="0.01" min="0"
+                               required/>
+                    </div>
+                    <div class="input-section">
+                        <label for="editPricePerDay">Price Per Day:</label>
+                        <input id="editPricePerDay" name="pricePerDay" type="number" step="0.01" min="0" required/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn-primary">Update Movie</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="rentModal" tabindex="-1" aria-labelledby="rentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="Rent" id="rentForm">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="rentModalLabel">Rent Movie</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="movieIdInput" name="movieId"/>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Select a client:</label>
+                        <div class="accordion" id="clientsAccordion">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#clientsList" aria-expanded="false"
+                                            aria-controls="clientsList">
+                                        <span id="selectedClientName">Choose a client...</span>
+                                    </button>
+                                </h2>
+                                <div id="clientsList" class="accordion-collapse collapse"
+                                     data-bs-parent="#clientsAccordion">
+                                    <div class="accordion-body p-0">
+                                        <div class="list-group list-group-flush">
+                                            @foreach (var client in Model.Clients)
+                                            {
+                                                <button type="button"
+                                                        class="list-group-item list-group-item-action client-option"
+                                                        data-client-id="@client.Id"
+                                                        data-client-name="@client.LastName @client.FirstName @client.MiddleName">
+                                                    <div
+                                                        class="fw-semibold">@client.LastName @client.FirstName @client.MiddleName</div>
+                                                </button>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="clientIdInput" name="clientId"/>
+                    </div>
+                    <div class="input-section">
+                        <label for="expectedReturnDate">Expected return date:</label>
+                        <input id="expectedReturnDate" name="expectedReturnDate" type="date" required/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn-primary">Confirm Rental</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script>
+        document.getElementById('rentModal').addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const movieId = button.getAttribute('data-movie-id');
+            document.getElementById('movieIdInput').value = movieId;
+
+            document.getElementById('selectedClientName').textContent = 'Choose a client...';
+            document.getElementById('clientIdInput').value = '';
+            document.getElementById('expectedReturnDate').value = '';
+
+            document.querySelectorAll('.client-option').forEach(opt => opt.classList.remove('active'));
+        });
+
+        document.getElementById('editModal').addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            document.getElementById('editMovieId').value = button.getAttribute('data-movie-id');
+            document.getElementById('editTitle').value = button.getAttribute('data-movie-title');
+            document.getElementById('editDescription').value = button.getAttribute('data-movie-description');
+            document.getElementById('editCollateralValue').value = parseFloat(button.getAttribute('data-movie-collateral'));
+            document.getElementById('editPricePerDay').value = parseFloat(button.getAttribute('data-movie-price'));
+
+            console.log("non float value is ", button.getAttribute('data-movie-price'))
+            console.log("float value is ", parseFloat(button.getAttribute('data-movie-price')))
+        });
+
+        document.getElementById('createModal').addEventListener('show.bs.modal', function () {
+            document.getElementById('createForm').reset();
+        });
+
+        document.querySelectorAll('.client-option').forEach(button => {
+            button.addEventListener('click', function () {
+                const clientId = this.getAttribute('data-client-id');
+
+                document.getElementById('selectedClientName').textContent = this.getAttribute('data-client-name');
+                document.getElementById('clientIdInput').value = clientId;
+
+                document.querySelectorAll('.client-option').forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+
+                const accordion = bootstrap.Collapse.getInstance(document.getElementById('clientsList'));
+                if (accordion) {
+                    accordion.hide();
+                } else {
+                    new bootstrap.Collapse(document.getElementById('clientsList'), {toggle: true});
+                }
+            });
+        });
+
+        document.getElementById('rentForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const clientId = document.getElementById('clientIdInput').value;
+
+            if (!clientId) {
+                alert('Please select a client');
+                return;
+            }
+
+            const request = {
+                clientId: document.getElementById('clientIdInput').value,
+                movieId: document.getElementById('movieIdInput').value,
+                expectedReturnDate: document.getElementById('expectedReturnDate').value
+            };
+
+            try {
+                const response = await fetch('?handler=Rent', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify(request)
+                });
+
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    const error = await response.text();
+                    alert('Error: ' + error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+
+        document.getElementById('createForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const request = {
+                title: document.getElementById('createTitle').value,
+                description: document.getElementById('createDescription').value,
+                collateralValue: parseFloat(document.getElementById('createCollateralValue').value),
+                pricePerDay: parseFloat(document.getElementById('createPricePerDay').value)
+            };
+
+            try {
+                const response = await fetch('?handler=Create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify(request)
+                });
+
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    const error = await response.text();
+                    alert('Error: ' + error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+
+        document.getElementById('editForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const movieId = document.getElementById('editMovieId').value;
+            const request = {
+                title: document.getElementById('editTitle').value,
+                description: document.getElementById('editDescription').value,
+                collateralValue: parseFloat(document.getElementById('editCollateralValue').value),
+                pricePerDay: parseFloat(document.getElementById('editPricePerDay').value)
+            };
+
+            try {
+                const response = await fetch(`?handler=Update&movieId=${movieId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify(request)
+                });
+
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    const error = await response.text();
+                    alert('Error: ' + error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+
+        document.querySelectorAll('.btn-danger').forEach(button => {
+            button.addEventListener('click', async function () {
+                const movieCard = this.closest('.movie-card');
+                const movieTitle = movieCard.querySelector('.title').textContent.trim();
+                const movieId = movieCard.querySelector('[data-movie-id]').getAttribute('data-movie-id');
+
+                console.log("movieid is ", movieId)
+
+                if (!confirm(`Are you sure you want to delete "${movieTitle}"?`)) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`?handler=Delete&movieId=${movieId}`, {
+                        method: 'POST',
+                        headers: {
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                        }
+                    });
+
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        const error = await response.text();
+                        alert('Error: ' + error);
+                    }
+                } catch (error) {
+                    alert('Error: ' + error.message);
+                }
+            });
+        });
+    </script>
+}
