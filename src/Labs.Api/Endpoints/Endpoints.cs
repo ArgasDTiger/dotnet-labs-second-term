@@ -13,6 +13,8 @@ public static class Endpoints
         app.MapCreateMovie();
         app.MapUpdateMovie();
         app.MapDeleteMovie();
+        app.MapRentMovie();
+        app.MapReturnMovie();
         
         // Clients
         app.MapGetClientById();
