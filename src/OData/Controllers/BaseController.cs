@@ -26,4 +26,19 @@ public abstract class BaseController : ODataController
 
         return true;
     }
+
+    protected bool IsInvalidModel(out Dictionary<string, string[]?>? errors)
+    {
+        if (ModelState.IsValid)
+        {
+            errors = null;
+            return false;
+        }
+
+        errors = ModelState.ToDictionary(
+            kvp => kvp.Key,
+            kvp => kvp.Value?.Errors.Select(e => e.ErrorMessage).ToArray()
+        );
+        return true;
+    }
 }

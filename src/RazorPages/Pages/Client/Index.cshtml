@@ -45,10 +45,12 @@
                     data-client-phone="@client.PhoneNumber"
                     data-client-address="@client.HomeAddress"
                     data-client-passport-series="@client.PassportSeries"
-                    data-client-passport-number="@client.PassportNumber">
+                    data-client-passport-number="@client.PassportNumber"
+                    onclick="openEditModal(this)">
                     Edit
                 </button>
-                <button class="btn-danger" type="button" data-client-id="@client.Id">
+
+                <button class="btn-danger" type="button" data-client-id="@client.Id" onclick="deleteClient(this)">
                     Delete
                 </button>
             </div>
@@ -57,7 +59,8 @@
 </div>
 
 <div class="actions-container">
-    <button class="btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#createModal">+ Create Client
+    <button class="btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#createModal"
+            onclick="openCreateModal()">+ Create Client
     </button>
 </div>
 
@@ -88,7 +91,8 @@
                     </div>
                     <div class="input-section">
                         <label for="createHomeAddress">Home Address:</label>
-                        <textarea id="createHomeAddress" name="homeAddress" rows="3" required maxlength="500"></textarea>
+                        <textarea id="createHomeAddress" name="homeAddress" rows="3" required
+                                  maxlength="500"></textarea>
                     </div>
                     <div class="input-section">
                         <label for="createPassportSeries">Passport Series (Optional):</label>
@@ -158,8 +162,35 @@
 
 @section Scripts {
     <script>
-        document.getElementById('editModal').addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
+        async function deleteClient(button) {
+            const clientCard = button.closest('.movie-card');
+            const clientName = clientCard.querySelector('.title').textContent.trim();
+            const clientId = button.getAttribute('data-client-id');
+
+            if (!confirm(`Are you sure you want to delete "${clientName}"?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`?handler=Delete&clientId=${clientId}`, {
+                    method: 'POST',
+                    headers: {
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    }
+                });
+
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    const error = await response.text();
+                    alert('Error: ' + error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        function openEditModal(button) {
             document.getElementById('editClientId').value = button.getAttribute('data-client-id');
             document.getElementById('editFirstName').value = button.getAttribute('data-client-firstname');
             document.getElementById('editMiddleName').value = button.getAttribute('data-client-middlename');
@@ -168,11 +199,11 @@
             document.getElementById('editHomeAddress').value = button.getAttribute('data-client-address');
             document.getElementById('editPassportSeries').value = button.getAttribute('data-client-passport-series') || '';
             document.getElementById('editPassportNumber').value = button.getAttribute('data-client-passport-number');
-        });
+        }
 
-        document.getElementById('createModal').addEventListener('show.bs.modal', function () {
+        function openCreateModal() {
             document.getElementById('createForm').reset();
-        });
+        }
 
         document.getElementById('createForm').addEventListener('submit', async function (event) {
             event.preventDefault();
@@ -241,36 +272,6 @@
             } catch (error) {
                 alert('Error: ' + error.message);
             }
-        });
-
-        document.querySelectorAll('.btn-danger').forEach(button => {
-            button.addEventListener('click', async function () {
-                const clientCard = this.closest('.movie-card');
-                const clientName = clientCard.querySelector('.title').textContent.trim();
-                const clientId = this.getAttribute('data-client-id');
-
-                if (!confirm(`Are you sure you want to delete "${clientName}"?`)) {
-                    return;
-                }
-
-                try {
-                    const response = await fetch(`?handler=Delete&clientId=${clientId}`, {
-                        method: 'POST',
-                        headers: {
-                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                        }
-                    });
-
-                    if (response.ok) {
-                        location.reload();
-                    } else {
-                        const error = await response.text();
-                        alert('Error: ' + error);
-                    }
-                } catch (error) {
-                    alert('Error: ' + error.message);
-                }
-            });
         });
     </script>
 }

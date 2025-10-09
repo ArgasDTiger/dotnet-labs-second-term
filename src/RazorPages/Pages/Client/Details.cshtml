@@ -63,7 +63,8 @@
                             {
                                 <li>
                                     <button data-movie-id="@movie.MovieId" data-client-id="@Model.Client.Id"
-                                            class="btn-primary btn-return">
+                                            class="btn-primary btn-return"
+                                            onclick="returnMovie(this)">
                                         Return
                                     </button>
                                 </li>
@@ -85,36 +86,34 @@
 
 @section Scripts {
     <script>
-        document.querySelectorAll('.btn-return').forEach(button => {
-            button.addEventListener('click', async function () {
-                const movieId = this.getAttribute('data-movie-id');
-                const clientId = this.getAttribute('data-client-id');
+        async function returnMovie(button) {
+            const movieId = button.getAttribute('data-movie-id');
+            const clientId = button.getAttribute('data-client-id');
 
-                const request = {
-                    movieId: movieId,
-                    clientId: clientId,
-                };
+            const request = {
+                movieId: movieId,
+                clientId: clientId,
+            };
 
-                try {
-                    const response = await fetch(`?handler=ReturnMovie`, {
-                        method: 'POST',
-                        headers: {
-                            'content-type': 'application/json',
-                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value 
-                        },
-                        body: JSON.stringify(request),
-                    });
+            try {
+                const response = await fetch(`?handler=ReturnMovie`, {
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify(request),
+                });
 
-                    if (response.ok) {
-                        location.reload();
-                    } else {
-                        const error = await response.text();
-                        alert('Error: ' + error);
-                    }
-                } catch (error) {
-                    alert('Error: ' + error.message);
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    const error = await response.text();
+                    alert('Error: ' + error);
                 }
-            });
-        });
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
     </script>
 }

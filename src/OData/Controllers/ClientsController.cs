@@ -31,6 +31,10 @@ public sealed class ClientsController : BaseController
 
     public async Task<IActionResult> Post([FromBody] CreateClientRequest client, CancellationToken cancellationToken)
     {
+        if (IsInvalidModel(out var errors))
+        {
+            return BadRequest(errors); 
+        } 
         Client newClient = new Client
         {
             Id = Guid.NewGuid(),
@@ -53,6 +57,10 @@ public sealed class ClientsController : BaseController
     public async Task<IActionResult> Put([FromRoute] Guid key, [FromBody] UpdateClientRequest client,
         CancellationToken cancellationToken)
     {
+        if (IsInvalidModel(out var errors))
+        {
+            return BadRequest(errors); 
+        }
         var existingClient = await _context.Set<Client>().FindAsync([key], cancellationToken);
         if (existingClient == null)
         {

@@ -30,6 +30,11 @@ public sealed class MoviesController : BaseController
 
     public async Task<IActionResult> Post([FromBody] CreateMovieRequest movie, CancellationToken cancellationToken)
     {
+        if (IsInvalidModel(out var errors))
+        {
+            return BadRequest(errors);
+        }
+
         Movie newMovie = new Movie
         {
             Id = Guid.NewGuid(),
@@ -49,6 +54,11 @@ public sealed class MoviesController : BaseController
     public async Task<IActionResult> Put([FromRoute] Guid key, [FromBody] UpdateMovieRequest movie,
         CancellationToken cancellationToken)
     {
+        if (IsInvalidModel(out var errors))
+        {
+            return BadRequest(errors);
+        }
+
         var existingMovie = await _context.Set<Movie>().FindAsync([key], cancellationToken);
         if (existingMovie == null)
         {

@@ -31,6 +31,10 @@ public sealed class ClientMoviesController : BaseController
     public async Task<IActionResult> Post([FromBody] CreateClientMovieRequest clientMovie,
         CancellationToken cancellationToken)
     {
+        if (IsInvalidModel(out var errors))
+        {
+            return BadRequest(errors); 
+        }
         bool clientExists = await _context.Set<Client>().AnyAsync(c => c.Id == clientMovie.ClientId, cancellationToken);
         bool movieExists = await _context.Set<Movie>().AnyAsync(m => m.Id == clientMovie.MovieId, cancellationToken);
 
@@ -64,6 +68,10 @@ public sealed class ClientMoviesController : BaseController
     public async Task<IActionResult> Put([FromRoute] Guid key, [FromBody] UpdateClientMovieRequest clientMovie,
         CancellationToken cancellationToken)
     {
+        if (IsInvalidModel(out var errors))
+        {
+            return BadRequest(errors); 
+        }
         var existingClientMovie = await _context.Set<ClientMovie>().FindAsync([key], cancellationToken);
         if (existingClientMovie == null)
         {

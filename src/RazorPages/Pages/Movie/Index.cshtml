@@ -32,9 +32,11 @@
                     data-movie-id="@movie.Id"
                     data-movie-title="@movie.Title"
                     data-movie-price="@movie.PricePerDay"
-                    data-movie-collateral="@movie.CollateralValue">
+                    data-movie-collateral="@movie.CollateralValue"
+                    onclick="openRentModal(this)">
                     Rent
                 </button>
+
                 <button
                     class="btn-secondary"
                     type="button"
@@ -44,10 +46,12 @@
                     data-movie-title="@movie.Title"
                     data-movie-description="@movie.Description"
                     data-movie-price="@movie.PricePerDay.ToString(System.Globalization.CultureInfo.InvariantCulture)"
-                    data-movie-collateral="@movie.CollateralValue.ToString(System.Globalization.CultureInfo.InvariantCulture)">
+                    data-movie-collateral="@movie.CollateralValue.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                    onclick="openEditModal(this)">
                     Edit
                 </button>
-                <button class="btn-danger" type="button" data-movie-id="@movie.Id">
+
+                <button class="btn-danger" type="button" data-movie-id="@movie.Id" onclick="deleteMovie(this)">
                     Delete
                 </button>
             </div>
@@ -57,7 +61,8 @@
 
 
 <div class="actions-container">
-    <button class="btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#createModal">+ Create movie
+    <button class="btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#createModal"
+            onclick="openCreateModal()">+ Create movie
     </button>
 </div>
 
@@ -168,7 +173,8 @@
                                                 <button type="button"
                                                         class="list-group-item list-group-item-action client-option"
                                                         data-client-id="@client.Id"
-                                                        data-client-name="@client.LastName @client.FirstName @client.MiddleName">
+                                                        data-client-name="@client.LastName @client.FirstName @client.MiddleName"
+                                                        onclick="selectClient(this)">
                                                     <div
                                                         class="fw-semibold">@client.LastName @client.FirstName @client.MiddleName</div>
                                                 </button>
@@ -198,52 +204,72 @@
 
 @section Scripts {
     <script>
-        document.getElementById('rentModal').addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
-            const movieId = button.getAttribute('data-movie-id');
-            document.getElementById('movieIdInput').value = movieId;
+        function openRentModal(button) {
+            document.getElementById('movieIdInput').value = button.getAttribute('data-movie-id');
 
             document.getElementById('selectedClientName').textContent = 'Choose a client...';
             document.getElementById('clientIdInput').value = '';
             document.getElementById('expectedReturnDate').value = '';
 
             document.querySelectorAll('.client-option').forEach(opt => opt.classList.remove('active'));
-        });
+        }
 
-        document.getElementById('editModal').addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
+        function openEditModal(button) {
             document.getElementById('editMovieId').value = button.getAttribute('data-movie-id');
             document.getElementById('editTitle').value = button.getAttribute('data-movie-title');
             document.getElementById('editDescription').value = button.getAttribute('data-movie-description');
             document.getElementById('editCollateralValue').value = parseFloat(button.getAttribute('data-movie-collateral'));
             document.getElementById('editPricePerDay').value = parseFloat(button.getAttribute('data-movie-price'));
+        }
 
-            console.log("non float value is ", button.getAttribute('data-movie-price'))
-            console.log("float value is ", parseFloat(button.getAttribute('data-movie-price')))
-        });
-
-        document.getElementById('createModal').addEventListener('show.bs.modal', function () {
+        function openCreateModal() {
             document.getElementById('createForm').reset();
-        });
+        }
 
-        document.querySelectorAll('.client-option').forEach(button => {
-            button.addEventListener('click', function () {
-                const clientId = this.getAttribute('data-client-id');
+        function selectClient(button) {
+            const clientId = button.getAttribute('data-client-id');
 
-                document.getElementById('selectedClientName').textContent = this.getAttribute('data-client-name');
-                document.getElementById('clientIdInput').value = clientId;
+            document.getElementById('selectedClientName').textContent = button.getAttribute('data-client-name');
+            document.getElementById('clientIdInput').value = clientId;
 
-                document.querySelectorAll('.client-option').forEach(opt => opt.classList.remove('active'));
-                this.classList.add('active');
+            document.querySelectorAll('.client-option').forEach(opt => opt.classList.remove('active'));
+            button.classList.add('active');
 
-                const accordion = bootstrap.Collapse.getInstance(document.getElementById('clientsList'));
-                if (accordion) {
-                    accordion.hide();
+            const accordion = bootstrap.Collapse.getInstance(document.getElementById('clientsList'));
+            if (accordion) {
+                accordion.hide();
+            } else {
+                new bootstrap.Collapse(document.getElementById('clientsList'), {toggle: true});
+            }
+        }
+
+        async function deleteMovie(button) {
+            const movieCard = button.closest('.movie-card');
+            const movieTitle = movieCard.querySelector('.title').textContent.trim();
+            const movieId = button.getAttribute('data-movie-id');
+
+            if (!confirm(`Are you sure you want to delete "${movieTitle}"?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`?handler=Delete&movieId=${movieId}`, {
+                    method: 'POST',
+                    headers: {
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    }
+                });
+
+                if (response.ok) {
+                    location.reload();
                 } else {
-                    new bootstrap.Collapse(document.getElementById('clientsList'), {toggle: true});
+                    const error = await response.text();
+                    alert('Error: ' + error);
                 }
-            });
-        });
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
 
         document.getElementById('rentForm').addEventListener('submit', async function (event) {
             event.preventDefault();
@@ -343,38 +369,6 @@
             } catch (error) {
                 alert('Error: ' + error.message);
             }
-        });
-
-        document.querySelectorAll('.btn-danger').forEach(button => {
-            button.addEventListener('click', async function () {
-                const movieCard = this.closest('.movie-card');
-                const movieTitle = movieCard.querySelector('.title').textContent.trim();
-                const movieId = movieCard.querySelector('[data-movie-id]').getAttribute('data-movie-id');
-
-                console.log("movieid is ", movieId)
-
-                if (!confirm(`Are you sure you want to delete "${movieTitle}"?`)) {
-                    return;
-                }
-
-                try {
-                    const response = await fetch(`?handler=Delete&movieId=${movieId}`, {
-                        method: 'POST',
-                        headers: {
-                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                        }
-                    });
-
-                    if (response.ok) {
-                        location.reload();
-                    } else {
-                        const error = await response.text();
-                        alert('Error: ' + error);
-                    }
-                } catch (error) {
-                    alert('Error: ' + error.message);
-                }
-            });
         });
     </script>
 }
