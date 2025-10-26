@@ -1,8 +1,12 @@
-﻿using Maui.Views;
+﻿using Maui.Features.Clients.Services;
+using Maui.Features.Clients.Views;
+using Maui.Views;
 using Microsoft.Extensions.Logging;
-using Maui.Extensions;
-using Maui.Services;
-using Maui.ViewModels;
+using Maui.Features.Movies.Services;
+using Maui.Features.Movies.Views;
+using Maui.Features.Clients.ViewModels;
+using Maui.Features.Movies.ViewModels;
+using Maui.Shared.Extensions;
 
 namespace Maui;
 

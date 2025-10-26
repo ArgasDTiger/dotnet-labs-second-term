@@ -1,6 +1,6 @@
-﻿using Maui.ViewModels;
+﻿using Maui.Features.Clients.ViewModels;
 
-namespace Maui.Views;
+namespace Maui.Features.Clients.Views;
 
 public partial class ClientsPage
 {

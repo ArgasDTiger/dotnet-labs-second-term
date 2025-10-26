@@ -1,10 +1,11 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.Input;
-using Maui.Models;
-using Maui.Services;
+using Maui.Features.Movies.Models;
+using Maui.Features.Movies.Services;
+using Maui.Shared.ViewModels;
 
-namespace Maui.ViewModels;
+namespace Maui.Features.Movies.ViewModels;
 
 public sealed partial class MovieViewModel : ViewModel
 {

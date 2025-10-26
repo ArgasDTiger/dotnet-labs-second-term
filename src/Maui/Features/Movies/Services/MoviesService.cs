@@ -1,11 +1,12 @@
 ﻿using System.Collections.Immutable;
 using System.Net.Http.Json;
 using System.Text.Json;
-using Maui.Models;
-using Maui.RequestModels;
+using Maui.Features.Movies.Models;
+using Maui.Features.Movies.Requests;
+using Maui.Shared.Models;
 using OneOf.Types;
 
-namespace Maui.Services;
+namespace Maui.Features.Movies.Services;
 
 public sealed class MoviesService : IMoviesService
 {

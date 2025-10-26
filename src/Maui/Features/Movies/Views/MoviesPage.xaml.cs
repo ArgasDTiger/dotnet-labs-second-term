@@ -1,6 +1,6 @@
-﻿using Maui.ViewModels;
+﻿using Maui.Features.Movies.ViewModels;
 
-namespace Maui.Views;
+namespace Maui.Features.Movies.Views;
 
 public sealed partial class MoviesPage
 {

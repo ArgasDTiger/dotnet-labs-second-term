@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Maui.ViewModels;
+namespace Maui.Shared.ViewModels;
 
 public abstract partial class ViewModel : ObservableObject
 {

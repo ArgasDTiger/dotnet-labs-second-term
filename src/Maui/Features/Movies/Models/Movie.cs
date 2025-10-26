@@ -1,4 +1,4 @@
-﻿namespace Maui.Models;
+﻿namespace Maui.Features.Movies.Models;
 
 public sealed record Movie(
     Guid Id,

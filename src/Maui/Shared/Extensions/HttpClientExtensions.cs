@@ -1,6 +1,6 @@
 ﻿using Maui.Constants;
 
-namespace Maui.Extensions;
+namespace Maui.Shared.Extensions;
 
 public static class HttpClientExtensions
 {

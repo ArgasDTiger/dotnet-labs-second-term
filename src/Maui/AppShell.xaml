@@ -4,9 +4,10 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="clr-namespace:Maui.Views"
-    Title="Maui">
+    xmlns:views1="clr-namespace:Maui.Features.Movies.Views"
+    xmlns:views2="clr-namespace:Maui.Features.Clients.Views">
 
-    <TabBar>
+    <TabBar Shell.NavBarIsVisible="False">
         <ShellContent
             Title="Home"
             Route="HomeRoute"
@@ -16,13 +17,13 @@
         <ShellContent
             Title="Movies"
             Route="MoviesRoute"
-            ContentTemplate="{DataTemplate views:MoviesPage}"
+            ContentTemplate="{DataTemplate views1:MoviesPage}"
             Icon="movie_icon.svg"/>
 
         <ShellContent
             Title="Clients"
             Route="ClientsRoute"
-            ContentTemplate="{DataTemplate views:ClientsPage}"
+            ContentTemplate="{DataTemplate views2:ClientsPage}"
             Icon="client_icon.svg"/>
     </TabBar> 
     

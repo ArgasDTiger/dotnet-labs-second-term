@@ -1,9 +1,10 @@
 ﻿using System.Collections.Immutable;
-using Maui.Models;
-using Maui.RequestModels;
+using Maui.Features.Movies.Models;
+using Maui.Features.Movies.Requests;
+using Maui.Shared.Models;
 using OneOf.Types;
 
-namespace Maui.Services;
+namespace Maui.Features.Movies.Services;
 
 public interface IMoviesService
 {

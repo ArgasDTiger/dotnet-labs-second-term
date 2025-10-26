@@ -1,6 +1,6 @@
 ﻿using System.Collections.Immutable;
 
-namespace Maui.Models;
+namespace Maui.Features.Clients.Models;
 
 public sealed record Client(
     Guid Id,

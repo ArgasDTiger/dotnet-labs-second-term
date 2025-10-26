@@ -1,4 +1,4 @@
-﻿namespace Maui.Models;
+﻿namespace Maui.Features.Clients.Models;
 
 public sealed record ClientMovie(
     Guid MovieId,

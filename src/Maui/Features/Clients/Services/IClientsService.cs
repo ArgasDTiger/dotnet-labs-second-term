@@ -1,9 +1,10 @@
 ﻿using System.Collections.Immutable;
-using Maui.Models;
-using Maui.RequestModels.Client;
+using Maui.Features.Clients.Models;
+using Maui.Features.Clients.Requests;
+using Maui.Shared.Models;
 using OneOf.Types;
 
-namespace Maui.Services;
+namespace Maui.Features.Clients.Services;
 
 public interface IClientsService
 {

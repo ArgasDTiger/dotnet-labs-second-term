@@ -1,4 +1,4 @@
-﻿namespace Maui.RequestModels;
+﻿namespace Maui.Features.Movies.Requests;
 
 public sealed record CreateMovieRequest(
     string Title, 

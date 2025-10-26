@@ -1,4 +1,4 @@
-﻿namespace Maui.RequestModels.Client;
+﻿namespace Maui.Features.Clients.Requests;
 
 public sealed record CreateClientRequest(
     string FirstName,
