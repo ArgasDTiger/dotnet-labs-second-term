@@ -68,4 +68,29 @@
         <PackageReference Include="OneOf" Version="3.0.271" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Features\" />
+      <Folder Include="Shared\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <MauiXaml Update="Features\Clients\Views\ClientsPage.xaml">
+        <SubType>Designer</SubType>
+      </MauiXaml>
+      <MauiXaml Update="Features\Movies\Views\MoviesPage.xaml">
+        <SubType>Designer</SubType>
+      </MauiXaml>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Features\Clients\Views\ClientsPage.xaml.cs">
+        <DependentUpon>ClientsPage.xaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Features\Movies\Views\MoviesPage.xaml.cs">
+        <DependentUpon>MoviesPage.xaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
+
 </Project>
