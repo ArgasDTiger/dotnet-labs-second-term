@@ -1,6 +1,6 @@
 ﻿namespace Shared.Responses;
 
-public sealed class ClientWithMoviesResponse
+public sealed record ClientWithMoviesResponse
 {
     public required Guid Id { get; init; }
     public required string FirstName { get; init; }

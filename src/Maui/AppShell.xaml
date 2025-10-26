@@ -3,12 +3,27 @@
     x:Class="Maui.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:Maui"
+    xmlns:views="clr-namespace:Maui.Views"
     Title="Maui">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <TabBar>
+        <ShellContent
+            Title="Home"
+            Route="HomeRoute"
+            ContentTemplate="{DataTemplate views:WelcomePage}"
+            Icon="home_icon.svg"/>
 
+        <ShellContent
+            Title="Movies"
+            Route="MoviesRoute"
+            ContentTemplate="{DataTemplate views:MoviesPage}"
+            Icon="movie_icon.svg"/>
+
+        <ShellContent
+            Title="Clients"
+            Route="ClientsRoute"
+            ContentTemplate="{DataTemplate views:ClientsPage}"
+            Icon="client_icon.svg"/>
+    </TabBar> 
+    
 </Shell>

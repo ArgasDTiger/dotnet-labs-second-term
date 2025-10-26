@@ -1,6 +1,6 @@
 ﻿namespace Maui;
 
-public partial class AppShell : Shell
+public partial class AppShell
 {
     public AppShell()
     {
