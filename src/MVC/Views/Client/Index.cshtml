@@ -1,0 +1,187 @@
+﻿@model System.Collections.Immutable.ImmutableArray<Shared.Responses.ClientResponse>
+@{
+ViewData["Title"] = "Clients";
+}
+
+<div class="card-container">
+    @foreach (var client in Model)
+    {
+    <div class="movie-card">
+        <div class="title">
+            @client.LastName @client.FirstName @client.MiddleName
+        </div>
+        <ul class="subject-data">
+            <li class="subject-item">
+                <div class="header">Phone number:</div>
+                <div class="value">@client.PhoneNumber</div>
+            </li>
+            <li class="subject-item">
+                <div class="header">Home address:</div>
+                <div class="value">@client.HomeAddress</div>
+            </li>
+            <li class="subject-item">
+                <div class="header">Passport number:</div>
+                <div class="value">@client.PassportNumber</div>
+            </li>
+            @if (client.PassportSeries is not null)
+            {
+            <li>
+                <div class="header">Passport series:</div>
+                <div class="price">@client.PassportSeries</div>
+            </li>
+            }
+        </ul>
+        <div class="actions-container">
+            <a class="btn-primary" asp-action="Details" asp-route-id="@client.Id">Details</a>
+            <button
+                class="btn-secondary"
+                type="button"
+                data-bs-toggle="modal"
+                data-bs-target="#editModal"
+                data-client-id="@client.Id"
+                data-client-firstname="@client.FirstName"
+                data-client-middlename="@client.MiddleName"
+                data-client-lastname="@client.LastName"
+                data-client-phone="@client.PhoneNumber"
+                data-client-address="@client.HomeAddress"
+                data-client-passport-series="@client.PassportSeries"
+                data-client-passport-number="@client.PassportNumber"
+                onclick="openEditModal(this)">
+                Edit
+            </button>
+
+            <form asp-controller="Client" asp-action="Delete" asp-route-id="@client.Id" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete @client.FirstName @client.LastName?')">
+                @Html.AntiForgeryToken()
+                <button class="btn-danger" type="submit">
+                    Delete
+                </button>
+            </form>
+        </div>
+    </div>
+    }
+</div>
+
+<div class="actions-container">
+    <button class="btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#createModal"
+            onclick="openCreateModal()">+ Create Client
+    </button>
+</div>
+
+<div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-controller="Client" asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="createModalLabel">Create Client</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-section">
+                        <label for="createFirstName">First Name:</label>
+                        <input id="createFirstName" name="FirstName" type="text" required maxlength="100"/>
+                    </div>
+                    <div class="input-section">
+                        <label for="createMiddleName">Middle Name:</label>
+                        <input id="createMiddleName" name="MiddleName" type="text" required maxlength="100"/>
+                    </div>
+                    <div class="input-section">
+                        <label for="createLastName">Last Name:</label>
+                        <input id="createLastName" name="LastName" type="text" required maxlength="100"/>
+                    </div>
+                    <div class="input-section">
+                        <label for="createPhoneNumber">Phone Number:</label>
+                        <input id="createPhoneNumber" name="PhoneNumber" type="tel" required maxlength="20"/>
+                    </div>
+                    <div class="input-section">
+                        <label for="createHomeAddress">Home Address:</label>
+                        <textarea id="createHomeAddress" name="HomeAddress" rows="3" required
+                                  maxlength="500"></textarea>
+                    </div>
+                    <div class="input-section">
+                        <label for="createPassportSeries">Passport Series (Optional):</label>
+                        <input id="createPassportSeries" name="PassportSeries" type="text" maxlength="10"/>
+                    </div>
+                    <div class="input-section">
+                        <label for="createPassportNumber">Passport Number:</label>
+                        <input id="createPassportNumber" name="PassportNumber" type="text" required maxlength="20"/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn-primary">Create Client</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editForm" asp-controller="Client" asp-action="Update" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="editModalLabel">Edit Client</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editClientId" name="id"/>
+                    <div class="input-section">
+                        <label for="editFirstName">First Name:</label>
+                        <input id="editFirstName" name="FirstName" type="text" required maxlength="100"/>
+                    </div>
+                    <div class="input-section">
+                        <label for="editMiddleName">Middle Name:</label>
+                        <input id="editMiddleName" name="MiddleName" type="text" required maxlength="100"/>
+                    </div>
+                    <div class="input-section">
+                        <label for="editLastName">Last Name:</label>
+                        <input id="editLastName" name="LastName" type="text" required maxlength="100"/>
+                    </div>
+                    <div class="input-section">
+                        <label for="editPhoneNumber">Phone Number:</label>
+                        <input id="editPhoneNumber" name="PhoneNumber" type="tel" required maxlength="20"/>
+                    </div>
+                    <div class="input-section">
+                        <label for="editHomeAddress">Home Address:</label>
+                        <textarea id="editHomeAddress" name="HomeAddress" rows="3" required maxlength="500"></textarea>
+                    </div>
+                    <div class="input-section">
+                        <label for="editPassportSeries">Passport Series (Optional):</label>
+                        <input id="editPassportSeries" name="PassportSeries" type="text" maxlength="10"/>
+                    </div>
+                    <div class="input-section">
+                        <label for="editPassportNumber">Passport Number:</label>
+                        <input id="editPassportNumber" name="PassportNumber" type="text" required maxlength="20"/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn-primary">Update Client</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function openEditModal(button) {
+        document.getElementById('editClientId').value = button.getAttribute('data-client-id');
+        document.getElementById('editFirstName').value = button.getAttribute('data-client-firstname');
+        document.getElementById('editMiddleName').value = button.getAttribute('data-client-middlename');
+        document.getElementById('editLastName').value = button.getAttribute('data-client-lastname');
+        document.getElementById('editPhoneNumber').value = button.getAttribute('data-client-phone');
+        document.getElementById('editHomeAddress').value = button.getAttribute('data-client-address');
+        document.getElementById('editPassportSeries').value = button.getAttribute('data-client-passport-series') || '';
+        document.getElementById('editPassportNumber').value = button.getAttribute('data-client-passport-number');
+        const editForm = document.getElementById('editForm');
+        editForm.action = `/Client/Update/${button.getAttribute('data-client-id')}`;
+    }
+
+    function openCreateModal() {
+        document.getElementById('createForm').reset();
+    }
+</script>
+}

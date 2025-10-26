@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OData", "OData\OData.csproj
 		{F04872C6-6D6C-49AA-87EF-32C6276B5138} = {F04872C6-6D6C-49AA-87EF-32C6276B5138}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maui", "Maui\Maui.csproj", "{665DCFB6-BD3A-4E6E-991E-6CEBB7ED2250}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -62,5 +64,9 @@ Global
 		{850D1C03-1245-4162-8580-8D4904995C2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{850D1C03-1245-4162-8580-8D4904995C2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{850D1C03-1245-4162-8580-8D4904995C2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{665DCFB6-BD3A-4E6E-991E-6CEBB7ED2250}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{665DCFB6-BD3A-4E6E-991E-6CEBB7ED2250}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{665DCFB6-BD3A-4E6E-991E-6CEBB7ED2250}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{665DCFB6-BD3A-4E6E-991E-6CEBB7ED2250}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,0 +1,85 @@
+﻿@model Shared.Responses.ClientWithMoviesResponse
+@{
+    ViewData["Title"] = $"{Model.LastName} {Model.FirstName}";
+}
+
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <a asp-action="Index" class="btn-secondary">← Back to Clients</a>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h1 class="card-title">@Model.LastName @Model.FirstName @Model.MiddleName</h1>
+            <hr/>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Phone Number:</strong> @Model.PhoneNumber</p>
+                    <p><strong>Home Address:</strong> @Model.HomeAddress</p>
+                </div>
+                <div class="col-md-6">
+                    @if (Model.PassportSeries is not null)
+                    {
+                        <p><strong>Passport Series:</strong> @Model.PassportSeries</p>
+                    }
+                    <p><strong>Passport Number:</strong> @Model.PassportNumber</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.RentedMovies?.Count > 0)
+    {
+        <h2>Rented Movies</h2>
+        <div class="card-container">
+            @foreach (var movie in Model.RentedMovies)
+            {
+                <div class="movie-card">
+                    <div class="title">@movie.MovieTitle</div>
+                    <ul class="subject-data">
+                        <li class="subject-item">
+                            <div class="header">Expected return date:</div>
+                            <div class="value">@movie.ExpectedReturnDate.ToString("yyyy-MM-dd")</div>
+                        </li>
+                        <li class="subject-item">
+                            <div class="header">Price per day:</div>
+                            <div class="value">@movie.PricePerDay.ToString("C")</div>
+                        </li>
+                        @if (movie.ReturnedDate is not null)
+                        {
+                            <li class="subject-item">
+                                <div class="header">Returned date:</div>
+                                <div class="value">@movie.ReturnedDate.Value.ToString("yyyy-MM-dd")</div>
+                            </li>
+                        }
+                        @if (movie.ReturnedDate is null)
+                        {
+                            <li>
+                                <form asp-controller="Client" asp-action="ReturnMovie" method="post" onsubmit="return confirm('Are you sure you want to return this movie?')">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="movieId" value="@movie.MovieId"/>
+                                    <input type="hidden" name="clientId" value="@Model.Id"/>
+                                    <button type="submit" class="btn-primary">
+                                        Return
+                                    </button>
+                                </form>
+                            </li>
+                        }
+
+                    </ul>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            This client has no rented movies.
+        </div>
+    }
+</div>
+
+@section Scripts {}

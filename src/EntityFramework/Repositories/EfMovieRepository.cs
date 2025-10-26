@@ -76,7 +76,7 @@ public sealed class EfMovieRepository : IMovieRepository
         movieToUpdate.Description = client.Description;
         movieToUpdate.CollateralValue = client.CollateralValue;
         movieToUpdate.PricePerDay = client.PricePerDay;
-        
+
         await _context.SaveChangesAsync(cancellationToken);
         return new None();
     }
@@ -102,15 +102,8 @@ public sealed class EfMovieRepository : IMovieRepository
             return new ErrorMessage("Client cannot rent this movie.");
         }
 
-        ClientMovie newClientMovie = new ClientMovie
-        {
-            ClientId = request.ClientId,
-            MovieId = request.MovieId,
-            ExpectedReturnDate = request.ExpectedReturnDate,
-            StartDate = DateTime.UtcNow
-        };
+        RentMovie(request);
 
-        _context.Set<ClientMovie>().Add(newClientMovie);
         return await _context.SaveChangesAsync(cancellationToken) > 0
             ? new None()
             : throw new Exception("Failed to rent movie.");
@@ -127,7 +120,7 @@ public sealed class EfMovieRepository : IMovieRepository
         {
             return new ErrorMessage("Movie is not rented.");
         }
-        
+
         rentedMovie.ReturnDate = DateTime.UtcNow;
         return await _context.SaveChangesAsync(cancellationToken) > 0
             ? new None()
@@ -152,5 +145,18 @@ public sealed class EfMovieRepository : IMovieRepository
         return validationResult != null
                && validationResult.MovieExists
                && !validationResult.HasOverlap;
+    }
+
+    private void RentMovie(RentMovieRequest request)
+    {
+        ClientMovie newClientMovie = new ClientMovie
+        {
+            ClientId = request.ClientId,
+            MovieId = request.MovieId,
+            ExpectedReturnDate = request.ExpectedReturnDate,
+            StartDate = DateTime.UtcNow
+        };
+
+        _context.Set<ClientMovie>().Add(newClientMovie);
     }
 }
