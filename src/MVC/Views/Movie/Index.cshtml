@@ -1,0 +1,150 @@
+﻿@model System.Collections.Immutable.ImmutableArray<Shared.Responses.MovieResponse>
+@{
+    ViewData["Title"] = "Movies";
+}
+
+<div class="card-container">
+    @foreach (var movie in Model)
+    {
+        <div class="movie-card">
+            <div class="title">
+                @movie.Title
+            </div>
+            <div class="description">
+                @movie.Description
+            </div>
+            <ul class="subject-data">
+                <li class="subject-item">
+                    <div class="header">Price per day:</div>
+                    <div class="value">@movie.PricePerDay</div>
+                </li>
+                <li class="subject-item">
+                    <div class="header">Collateral value:</div>
+                    <div class="value">@movie.CollateralValue</div>
+                </li>
+            </ul>
+            <div class="actions-container">
+                <button
+                    class="btn-secondary"
+                    type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editModal"
+                    data-movie-id="@movie.Id"
+                    data-movie-title="@movie.Title"
+                    data-movie-description="@movie.Description"
+                    data-movie-price="@movie.PricePerDay.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                    data-movie-collateral="@movie.CollateralValue.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                    onclick="openEditModal(this)">
+                    Edit
+                </button>
+
+                <form asp-controller="Movie" asp-action="Delete" asp-route-id="@movie.Id" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete @movie.Title?')">
+                    @Html.AntiForgeryToken()
+                    <button class="btn-danger" type="submit">
+                        Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="actions-container">
+    <button class="btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#createModal"
+            onclick="openCreateModal()">+ Create movie
+    </button>
+</div>
+
+<div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-controller="Movie" asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="createModalLabel">Create Movie</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-section">
+                        <label for="createTitle">Title:</label>
+                        <input id="createTitle" name="Title" type="text" required maxlength="200"/>
+                    </div>
+                    <div class="input-section">
+                        <label for="createDescription">Description:</label>
+                        <textarea id="createDescription" name="Description" rows="4" required
+                                  maxlength="1000"></textarea>
+                    </div>
+                    <div class="input-section">
+                        <label for="createCollateralValue">Collateral Value:</label>
+                        <input id="createCollateralValue" name="CollateralValue" type="number" step="0.01" min="0"
+                               required/>
+                    </div>
+                    <div class="input-section">
+                        <label for="createPricePerDay">Price Per Day:</label>
+                        <input id="createPricePerDay" name="PricePerDay" type="number" step="0.01" min="0" required/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn-primary">Create Movie</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editForm" asp-controller="Movie" asp-action="Update" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="editModalLabel">Edit Movie</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editMovieId" name="id"/>
+                    <div class="input-section">
+                        <label for="editTitle">Title:</label>
+                        <input id="editTitle" name="Title" type="text" required maxlength="200"/>
+                    </div>
+                    <div class="input-section">
+                        <label for="editDescription">Description:</label>
+                        <textarea id="editDescription" name="Description" rows="4" required maxlength="1000"></textarea>
+                    </div>
+                    <div class="input-section">
+                        <label for="editCollateralValue">Collateral Value:</label>
+                        <input id="editCollateralValue" name="CollateralValue" type="number" step="0.01" min="0"
+                               required/>
+                    </div>
+                    <div class="input-section">
+                        <label for="editPricePerDay">Price Per Day:</label>
+                        <input id="editPricePerDay" name="PricePerDay" type="number" step="0.01" min="0" required/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn-primary">Update Movie</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function openEditModal(button) {
+        document.getElementById('editMovieId').value = button.getAttribute('data-movie-id');
+        document.getElementById('editTitle').value = button.getAttribute('data-movie-title');
+        document.getElementById('editDescription').value = button.getAttribute('data-movie-description');
+        document.getElementById('editCollateralValue').value = parseFloat(button.getAttribute('data-movie-collateral'));
+        document.getElementById('editPricePerDay').value = parseFloat(button.getAttribute('data-movie-price'));
+        const editForm = document.getElementById('editForm');
+        editForm.action = `/Movie/Update/${button.getAttribute('data-movie-id')}`;
+    }
+
+    function openCreateModal() {
+        document.querySelector('#createModal form').reset();
+    }
+</script>
+}

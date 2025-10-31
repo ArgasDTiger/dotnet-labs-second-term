@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:Maui.Features.Clients.ViewModels"
+             x:DataType="viewModels:ClientUpdateViewModel"
+             x:Class="Maui.Features.Clients.Views.ClientUpdatePage"
+             Shell.NavBarIsVisible="True"
+             Title="{Binding PageTitle}">
+    
+    <ContentPage.Resources>
+        <Style TargetType="Label">
+            <Setter Property="TextColor" Value="{StaticResource Gray200}" />
+            <Setter Property="Margin" Value="0,10,0,5" />
+        </Style>
+        <Style TargetType="Entry">
+            <Setter Property="TextColor" Value="{StaticResource White}" />
+            <Setter Property="BackgroundColor" Value="{StaticResource Gray600}" />
+        </Style>
+        <Style TargetType="Editor">
+            <Setter Property="TextColor" Value="{StaticResource White}" />
+            <Setter Property="BackgroundColor" Value="{StaticResource Gray600}" />
+            <Setter Property="HeightRequest" Value="120" />
+        </Style>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="5">
+
+            <Label Text="First Name" />
+            <Entry Text="{Binding FirstName}" />
+            
+            <Label Text="Middle Name" />
+            <Entry Text="{Binding MiddleName}" />
+
+            <Label Text="Last Name" />
+            <Entry Text="{Binding LastName}" />
+
+            <Label Text="Phone Number" />
+            <Entry Text="{Binding PhoneNumber}" Keyboard="Telephone" />
+            
+            <Label Text="Home Address" />
+            <Editor Text="{Binding HomeAddress}" AutoSize="Disabled" />
+
+            <Label Text="Passport Series" />
+            <Entry Text="{Binding PassportSeries}" />
+            
+            <Label Text="Passport Number" />
+            <Entry Text="{Binding PassportNumber}" Keyboard="Numeric" />
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,20,0,0">
+                <Button Grid.Column="0"
+                        Text="Save"
+                        Command="{Binding SaveClientCommand}"
+                        BackgroundColor="{StaticResource Primary}" />
+                <Button Grid.Column="1"
+                        Text="Cancel"
+                        Command="{Binding CancelCommand}"
+                        BackgroundColor="{StaticResource Gray600}" />
+            </Grid>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

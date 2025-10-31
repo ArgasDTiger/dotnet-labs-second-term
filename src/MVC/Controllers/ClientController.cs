@@ -22,7 +22,7 @@ public sealed class ClientController : Controller
         return View(clients);
     }
 
-    public async Task<IActionResult> Details(Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> Details([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var client = await _clientRepository.GetClientByIdAsync(id, cancellationToken);
 
@@ -36,7 +36,7 @@ public sealed class ClientController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(CreateClientRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> Create([FromBody] CreateClientRequest request, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
@@ -49,7 +49,7 @@ public sealed class ClientController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Update(Guid id, UpdateClientRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> Update([FromRoute] Guid id, UpdateClientRequest request, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
@@ -66,7 +66,7 @@ public sealed class ClientController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var result = await _clientRepository.DeleteClientAsync(id, cancellationToken);
 

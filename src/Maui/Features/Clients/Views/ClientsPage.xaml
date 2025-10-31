@@ -4,18 +4,23 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:Maui.Features.Clients.Models"
              xmlns:viewModels="clr-namespace:Maui.Features.Clients.ViewModels"
+             xmlns:converters="clr-namespace:Maui.Shared.Converters"
              x:DataType="viewModels:ClientViewModel"
              x:Class="Maui.Features.Clients.Views.ClientsPage">
 
+    <ContentPage.Resources>
+        <converters:IsNotNullOrEmptyConverter x:Key="IsNotNullOrEmpty" />
+    </ContentPage.Resources>
     <Grid RowDefinitions="Auto, *"
           ColumnDefinitions="*"
           RowSpacing="5"
           Padding="10">
 
-        <Label Text="Clients"
-               Grid.Row="0"
-               FontSize="24"
-               HorizontalOptions="Center" />
+        <Button Grid.Row="0"
+                Text="+ Create Client"
+                Command="{Binding GoToCreateClientCommand}"
+                BackgroundColor="{StaticResource Primary}"
+                HorizontalOptions="Fill" />
 
         <RefreshView Grid.Row="1"
                      Command="{Binding LoadClientsCommand}"
@@ -24,7 +29,112 @@
             <CollectionView ItemsSource="{Binding Clients}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Client">
-                        <Label Text="{Binding FirstName}" Padding="0,10" />
+                        <VerticalStackLayout
+                            Padding="10"
+                            Margin="5"
+                            BackgroundColor="{StaticResource Gray600}"
+                            VerticalOptions="Center">
+                            
+                            <VerticalStackLayout.GestureRecognizers>
+                                <TapGestureRecognizer CommandParameter="{Binding .}"
+                                                      Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:ClientViewModel}}, Path=GoToDetailsCommand}"/>
+                            </VerticalStackLayout.GestureRecognizers>
+                            
+                            <VerticalStackLayout.Resources>
+                                <ResourceDictionary>
+                                    <Style TargetType="Label">
+                                        <Setter Property="TextColor" Value="{StaticResource Gray200}" />
+                                        <Setter Property="FontSize" Value="16" />
+                                    </Style>
+                                </ResourceDictionary>
+                            </VerticalStackLayout.Resources>
+                            
+                            <Label
+                                FontSize="18"
+                                FontAttributes="Bold"
+                                HorizontalTextAlignment="Center">
+                                <Label.Text>
+                                    <MultiBinding StringFormat="{}{0} {1} {2}">
+                                        <Binding Path="LastName" />
+                                        <Binding Path="FirstName" />
+                                        <Binding Path="MiddleName" />
+                                    </MultiBinding>
+                                </Label.Text>
+                            </Label>
+                            <Grid RowSpacing="10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <Label
+                                    Grid.Column="0"
+                                    Grid.Row="0"
+                                    Text="Phone Number:"
+                                    HorizontalOptions="Start" />
+                                <Label
+                                    Grid.Column="1"
+                                    Grid.Row="0"
+                                    Text="{Binding PhoneNumber}"
+                                    HorizontalOptions="End" />
+
+                                <Label
+                                    Grid.Column="0"
+                                    Grid.Row="1"
+                                    Text="Home address:"
+                                    HorizontalOptions="Start" />
+                                <Label
+                                    Grid.Column="1"
+                                    Grid.Row="1"
+                                    Text="{Binding HomeAddress}"
+                                    HorizontalOptions="End" />
+
+                                <Label
+                                    Grid.Column="0"
+                                    Grid.Row="2"
+                                    Text="Passport series:"
+                                    HorizontalOptions="Start"
+                                    IsVisible="{Binding PassportSeries, Converter={StaticResource IsNotNullOrEmpty}}"/>
+                                <Label
+                                    Grid.Column="1"
+                                    Grid.Row="2"
+                                    Text="{Binding PassportSeries}"
+                                    HorizontalOptions="End"
+                                    IsVisible="{Binding PassportSeries, Converter={StaticResource IsNotNullOrEmpty}}"/>
+
+                                <Label
+                                    Grid.Column="0"
+                                    Grid.Row="3"
+                                    Text="Passport number:"
+                                    HorizontalOptions="Start" />
+                                <Label
+                                    Grid.Column="1"
+                                    Grid.Row="3"
+                                    Text="{Binding PassportNumber}"
+                                    HorizontalOptions="End" />
+                            </Grid>
+
+                            <Grid ColumnDefinitions="*,*">
+                                <Button Grid.Column="0"
+                                        Text="Update"
+                                        BackgroundColor="Bisque"
+                                        TextColor="Black"
+                                        CommandParameter="{Binding .}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:ClientViewModel}}, Path=GoToUpdateClientCommand}" />
+                                <Button Grid.Column="1"
+                                        Text="Delete"
+                                        BackgroundColor="Red"
+                                        CommandParameter="{Binding .}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:ClientViewModel}}, Path=DeleteClientCommand}" />
+                            </Grid>
+
+                        </VerticalStackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>

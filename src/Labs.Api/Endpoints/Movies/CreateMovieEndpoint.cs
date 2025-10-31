@@ -8,7 +8,7 @@ public static class CreateMovieEndpoint
 {
     public static void MapCreateMovie(this WebApplication app)
     {
-        app.MapPost("api/v1/mvoies",
+        app.MapPost("api/v1/movies",
             async ([FromServices] IMovieRepository movieRepository, [FromBody] CreateMovieRequest request,
                 CancellationToken cancellationToken) =>
             {

@@ -36,10 +36,10 @@ public sealed class ClientsService : IClientsService
         return clients ?? ImmutableArray<Client>.Empty; 
     }
 
-    public async Task<OneOf<None, ErrorMessage>> CreateClient(Guid clientId, CreateClientRequest request)
+    public async Task<OneOf<None, ErrorMessage>> CreateClient(CreateClientRequest request)
     {
         var httpContent = JsonContent.Create(request, options: SerializerOptions);
-        var response = await _httpClient.PostAsync(ClientsRoute + clientId, httpContent);
+        var response = await _httpClient.PostAsync(ClientsRoute, httpContent);
         
         if (response.IsSuccessStatusCode) return new None();
         
@@ -66,5 +66,20 @@ public sealed class ClientsService : IClientsService
         
         var error = await response.Content.ReadFromJsonAsync<ErrorMessage>(SerializerOptions);
         return error ?? new ErrorMessage("Failed to delete client.");
+    }
+    
+    public async Task<OneOf<Client, ErrorMessage>> GetClientById(Guid clientId)
+    {
+        var response = await _httpClient.GetAsync(ClientsRoute + clientId);
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadFromJsonAsync<ErrorMessage>(SerializerOptions);
+            return error ?? new ErrorMessage("Failed to load client details.");
+        }
+
+        var client = await response.Content.ReadFromJsonAsync<Client>(SerializerOptions);
+        
+        if (client is null) return new ErrorMessage("Failed to deserialize client.");
+        return client;
     }
 }

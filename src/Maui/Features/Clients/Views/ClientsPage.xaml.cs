@@ -2,8 +2,11 @@
 
 namespace Maui.Features.Clients.Views;
 
-public partial class ClientsPage
+[QueryProperty(nameof(LoadClients), "LoadClients")]
+public sealed partial class ClientsPage
 {
+    public bool LoadClients { get; set; }
+    
     public ClientsPage(ClientViewModel clientViewModel)
     {
         InitializeComponent();
@@ -14,9 +17,13 @@ public partial class ClientsPage
     {
         base.OnAppearing();
 
-        if (BindingContext is ClientViewModel { Clients.Count: 0 } vm)
+        if (BindingContext is ClientViewModel vm)
         {
-            vm.LoadClientsCommand.ExecuteAsync(null);
+            if (vm.Clients.Count == 0 || LoadClients)
+            {
+                vm.LoadClientsCommand.ExecuteAsync(null);
+                LoadClients = false;
+            }
         }
     }
 }

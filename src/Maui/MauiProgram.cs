@@ -30,9 +30,15 @@ public static class MauiProgram
         builder.Services.AddSingleton<WelcomePage>();
         builder.Services.AddSingleton<ClientsPage>();
         builder.Services.AddSingleton<MoviesPage>();
+        builder.Services.AddTransient<ClientsDetailsPage>();
+        builder.Services.AddTransient<MovieUpdatePage>();
+        builder.Services.AddTransient<ClientUpdatePage>();
 
         builder.Services.AddSingleton<MovieViewModel>();
         builder.Services.AddSingleton<ClientViewModel>();
+        builder.Services.AddTransient<ClientDetailsViewModel>();
+        builder.Services.AddTransient<MovieUpdateViewModel>();
+        builder.Services.AddTransient<ClientUpdateViewModel>();
 
         builder.Services.AddApiHttpClient<IMoviesService, MoviesService>();
         builder.Services.AddApiHttpClient<IClientsService, ClientsService>();

@@ -11,7 +11,8 @@ namespace Maui.Features.Movies.Services;
 public sealed class MoviesService : IMoviesService
 {
     private readonly HttpClient _httpClient;
-    private const string MoviesRoute = "movies/"; 
+    private const string MoviesRoute = "movies/";
+
     private static readonly JsonSerializerOptions SerializerOptions = new()
     {
         PropertyNameCaseInsensitive = true
@@ -32,26 +33,26 @@ public sealed class MoviesService : IMoviesService
         }
 
         var movies = await response.Content.ReadFromJsonAsync<ImmutableArray<Movie>?>(SerializerOptions);
-        
-        return movies ?? ImmutableArray<Movie>.Empty; 
+
+        return movies ?? ImmutableArray<Movie>.Empty;
     }
 
-    public async Task<OneOf<None, ErrorMessage>> CreateMovie(Guid movieId, CreateMovieRequest request)
+    public async Task<OneOf<None, ErrorMessage>> CreateMovie(CreateMovieRequest request)
     {
         var httpContent = JsonContent.Create(request, options: SerializerOptions);
-        var response = await _httpClient.PostAsync(MoviesRoute + movieId, httpContent);
-        
+        var response = await _httpClient.PostAsync(MoviesRoute, httpContent);
+
         if (response.IsSuccessStatusCode) return new None();
-        
+
         var error = await response.Content.ReadFromJsonAsync<ErrorMessage>(SerializerOptions);
         return error ?? new ErrorMessage("Failed to create movie.");
     }
-    
+
     public async Task<OneOf<None, ErrorMessage>> UpdateMovie(Guid movieId, UpdateMovieRequest request)
     {
         var httpContent = JsonContent.Create(request, options: SerializerOptions);
         var response = await _httpClient.PutAsync(MoviesRoute + movieId, httpContent);
-        
+
         if (response.IsSuccessStatusCode) return new None();
 
         var error = await response.Content.ReadFromJsonAsync<ErrorMessage>(SerializerOptions);
@@ -61,10 +62,20 @@ public sealed class MoviesService : IMoviesService
     public async Task<OneOf<None, ErrorMessage>> DeleteMovie(Guid movieId)
     {
         var response = await _httpClient.DeleteAsync(MoviesRoute + movieId);
-        
+
         if (response.IsSuccessStatusCode) return new None();
-        
+
         var error = await response.Content.ReadFromJsonAsync<ErrorMessage>(SerializerOptions);
         return error ?? new ErrorMessage($"Failed to delete movie.");
+    }
+
+    public async Task<OneOf<None, ErrorMessage>> ReturnMovie(Guid movieId, Guid clientId)
+    {
+        var response = await _httpClient.PostAsync($"{MoviesRoute}{movieId}/return?clientId={clientId}", null);
+
+        if (response.IsSuccessStatusCode) return new None();
+
+        var error = await response.Content.ReadFromJsonAsync<ErrorMessage>(SerializerOptions);
+        return error ?? new ErrorMessage("Failed to return movie.");
     }
 }
