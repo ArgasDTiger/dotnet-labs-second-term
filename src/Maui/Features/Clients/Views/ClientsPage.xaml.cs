@@ -2,7 +2,7 @@
 
 namespace Maui.Features.Clients.Views;
 
-[QueryProperty(nameof(LoadClients), "LoadClients")]
+[QueryProperty(nameof(LoadClients), nameof(LoadClients))]
 public sealed partial class ClientsPage
 {
     public bool LoadClients { get; set; }

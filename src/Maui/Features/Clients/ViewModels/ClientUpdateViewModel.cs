@@ -14,41 +14,41 @@ public sealed partial class ClientUpdateViewModel : ViewModel
     private readonly IClientsService _clientsService;
     private bool _isUpdateMode;
 
-    [ObservableProperty] private Client _client;
+    [ObservableProperty] private Client _client = null!;
 
-    [ObservableProperty] private string _pageTitle;
+    [ObservableProperty] private string _pageTitle = null!;
 
-    [ObservableProperty] private string _firstName;
-    [ObservableProperty] private string _middleName;
-    [ObservableProperty] private string _lastName;
-    [ObservableProperty] private string _phoneNumber;
-    [ObservableProperty] private string _homeAddress;
+    [ObservableProperty] private string _firstName = null!;
+    [ObservableProperty] private string _middleName = null!;
+    [ObservableProperty] private string _lastName = null!;
+    [ObservableProperty] private string _phoneNumber = null!;
+    [ObservableProperty] private string _homeAddress = null!;
     [ObservableProperty] private string? _passportSeries;
-    [ObservableProperty] private string _passportNumber;
+    [ObservableProperty] private string _passportNumber = null!;
 
     public ClientUpdateViewModel(IClientsService clientsService)
     {
         _clientsService = clientsService;
     }
 
-    partial void OnClientChanged(Client value)
+    partial void OnClientChanged(Client? client)
     {
-        _isUpdateMode = value is not null;
+        _isUpdateMode = client is not null;
 
         if (_isUpdateMode)
         {
-            PageTitle = "Update Client";
-            FirstName = value.FirstName;
-            MiddleName = value.MiddleName;
-            LastName = value.LastName;
-            PhoneNumber = value.PhoneNumber;
-            HomeAddress = value.HomeAddress;
-            PassportSeries = value.PassportSeries;
-            PassportNumber = value.PassportNumber;
+            PageTitle = "Updating Client";
+            FirstName = client!.FirstName;
+            MiddleName = client.MiddleName;
+            LastName = client.LastName;
+            PhoneNumber = client.PhoneNumber;
+            HomeAddress = client.HomeAddress;
+            PassportSeries = client.PassportSeries;
+            PassportNumber = client.PassportNumber;
         }
         else
         {
-            PageTitle = "Create Client";
+            PageTitle = "Creating Client";
             FirstName = string.Empty;
             MiddleName = string.Empty;
             LastName = string.Empty;

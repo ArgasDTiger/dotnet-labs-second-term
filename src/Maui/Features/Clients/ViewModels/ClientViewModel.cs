@@ -22,7 +22,7 @@ public sealed partial class ClientViewModel : ViewModel
     [RelayCommand]
     private async Task LoadClientsAsync()
     {
-        if (IsLoading) return; // Add this guard
+        if (IsLoading) return;
         try
         {
             IsLoading = true;
@@ -64,7 +64,7 @@ public sealed partial class ClientViewModel : ViewModel
     }
 
     [RelayCommand]
-    private async Task DeleteClientAsync(Client client)
+    private async Task DeleteClientAsync(Client? client)
     {
         if (client is null) return;
 
@@ -97,14 +97,14 @@ public sealed partial class ClientViewModel : ViewModel
     }
 
     [RelayCommand]
-    private async Task GoToUpdateClientAsync(Client client)
+    private async Task GoToUpdateClientAsync(Client? client)
     {
         if (client is null) return;
         
         await Shell.Current.GoToAsync($"{nameof(ClientUpdatePage)}", true,
             new Dictionary<string, object>
             {
-                { "Client", client }
+                { nameof(Client), client }
             });
     }
 

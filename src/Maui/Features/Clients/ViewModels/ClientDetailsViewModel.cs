@@ -15,7 +15,7 @@ public sealed partial class ClientDetailsViewModel : ViewModel
     private readonly IMoviesService _moviesService;
 
     [ObservableProperty]
-    private Client _client;
+    private Client _client = null!;
     
     public ClientDetailsViewModel(IClientsService clientsService, IMoviesService moviesService)
     {
@@ -23,7 +23,7 @@ public sealed partial class ClientDetailsViewModel : ViewModel
         _moviesService = moviesService;
     }
     
-    partial void OnClientChanged(Client value)
+    partial void OnClientChanged(Client? value)
     {
         if (value is not null)
         {
@@ -56,7 +56,7 @@ public sealed partial class ClientDetailsViewModel : ViewModel
     }
 
     [RelayCommand]
-    private async Task ReturnMovieAsync(ClientMovie movie)
+    private async Task ReturnMovieAsync(ClientMovie? movie)
     {
         if (movie is null) return;
 
