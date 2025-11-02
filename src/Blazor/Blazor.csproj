@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="OneOf" Version="3.0.271" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Shared\Layout\MainLayout.razor" />
+      <AdditionalFiles Include="Shared\Layout\NavMenu.razor" />
+      <AdditionalFiles Include="Shared\Pages\Counter.razor" />
+      <AdditionalFiles Include="Shared\Pages\Error.razor" />
+      <AdditionalFiles Include="Shared\Pages\Home.razor" />
+      <AdditionalFiles Include="Shared\Pages\MoviesOverview.razor" />
+      <AdditionalFiles Include="Shared\Pages\Weather.razor" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Components\Pages\Counter.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Error.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Home.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\MoviesOverview.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Weather.razor" />
+    </ItemGroup>
+
+</Project>

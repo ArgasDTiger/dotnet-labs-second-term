@@ -1,0 +1,51 @@
+﻿@page "/movies"
+
+@rendermode InteractiveServer
+
+<h3>Movies</h3>
+
+@*<div class="card-container">
+    @foreach (var movie in Model)
+    {
+        <div class="movie-card">
+            <div class="title">
+                @movie.Title
+            </div>
+            <div class="description">
+                @movie.Description
+            </div>
+            <ul class="subject-data">
+                <li class="subject-item">
+                    <div class="header">Price per day:</div>
+                    <div class="value">@movie.PricePerDay</div>
+                </li>
+                <li class="subject-item">
+                    <div class="header">Collateral value:</div>
+                    <div class="value">@movie.CollateralValue</div>
+                </li>
+            </ul>
+            <div class="actions-container">
+                <button
+                    class="btn-secondary"
+                    type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editModal"
+                    data-movie-id="@movie.Id"
+                    data-movie-title="@movie.Title"
+                    data-movie-description="@movie.Description"
+                    data-movie-price="@movie.PricePerDay.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                    data-movie-collateral="@movie.CollateralValue.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                    onclick="openEditModal(this)">
+                    Edit
+                </button>
+
+                <form asp-controller="Movie" asp-action="Delete" asp-route-id="@movie.Id" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete @movie.Title?')">
+                    @Html.AntiForgeryToken()
+                    <button class="btn-danger" type="submit">
+                        Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    }
+</div>*@
