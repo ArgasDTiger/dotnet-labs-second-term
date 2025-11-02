@@ -1,0 +1,1 @@
+The projects that are containing here were made as part of my laboratory works. These were some really fun project, or at least technologies that I could experiment with. I've tried to adhere to good practices, though didn't try much as for design and some front-end part.
