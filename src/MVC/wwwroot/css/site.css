@@ -80,7 +80,7 @@ nav .navbar-brand:hover, nav .nav-link:hover {
   background-color: var(--primary-background);
 }
 
-.movie-card {
+.card {
   width: 20%;
   background-color: var(--secondary-background);
   margin-right: 2em;
@@ -91,33 +91,33 @@ nav .navbar-brand:hover, nav .nav-link:hover {
   justify-content: space-between;
 }
 
-.movie-card .title {
+.card .title {
   text-align: center;
   font-size: 1.2em;
   font-weight: bold;
   color: var(--text-primary);
 }
 
-.movie-card .description {
+.card .description {
   text-align: left;
   font-size: 1em;
 }
 
-.movie-card .subject-data {
+.card .subject-data {
   padding-left: 0;
   margin-top: 0.7em;
 }
 
-.movie-card .subject-data .subject-item {
+.card .subject-data .subject-item {
   list-style-type: none;
   padding-left: 0;
   display: flex;
 }
-.movie-card .subject-data .subject-item .header {
+.card .subject-data .subject-item .header {
   font-weight: bold;
 }
 
-.movie-card .subject-data .subject-item .value {
+.card .subject-data .subject-item .value {
   margin-left: 0.5em;
 }
 

@@ -1,0 +1,17 @@
+﻿.bch-modal-content-container {
+    display: flex;
+    position: absolute;
+    border-radius: 10px;
+}
+
+.bch-modal-content-container.bch-central {
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.modal-color {
+    margin: 2em;
+    background-color: #8e8585;
+    color: #1b1a1a;
+}

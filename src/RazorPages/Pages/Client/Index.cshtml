@@ -6,7 +6,7 @@
 <div class="card-container">
     @foreach (var client in Model.Clients)
     {
-        <div class="movie-card">
+        <div class="card">
             <div class="title">
                 @client.LastName @client.FirstName @client.MiddleName
             </div>
@@ -163,7 +163,7 @@
 @section Scripts {
     <script>
         async function deleteClient(button) {
-            const clientCard = button.closest('.movie-card');
+            const clientCard = button.closest('.card');
             const clientName = clientCard.querySelector('.title').textContent.trim();
             const clientId = button.getAttribute('data-client-id');
 

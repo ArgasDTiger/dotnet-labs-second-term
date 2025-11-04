@@ -1,0 +1,55 @@
+﻿.card {
+    width: 20%;
+    background-color: #404343;
+    margin-right: 2em;
+    margin-bottom: 1em;
+    padding: 0.4em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.title {
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: var(--text-primary);
+}
+
+.description {
+    color: #afafaf;
+    text-align: left;
+    font-size: 1em;
+}
+
+.subject-data {
+    padding-left: 0;
+    margin-top: 0.7em;
+    color: #e1dbdb;
+}
+
+.subject-data .subject-item {
+    list-style-type: none;
+    padding-left: 0;
+    display: flex;
+}
+
+.subject-data .subject-item .header {
+    font-weight: bold;
+}
+
+.subject-data .subject-item .value {
+    margin-left: 0.5em;
+}
+
+.actions-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5em;
+}
+
+.actions-container button {
+    padding: 0.2em 1em;
+}

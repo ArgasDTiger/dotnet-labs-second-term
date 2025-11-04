@@ -1,6 +1,7 @@
 using Blazor.Clients.Services;
 using Blazor.Movies.Services;
 using Blazor.Shared;
+using Blazor.Shared.Components.Modal;
 using Blazor.Shared.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,8 +10,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddApiHttpClient<IMoviesService, MoviesService>(builder.Configuration);;
-builder.Services.AddApiHttpClient<IClientsService, ClientsService>(builder.Configuration);;
+builder.Services.AddApiHttpClient<IMoviesService, MoviesService>(builder.Configuration);
+builder.Services.AddApiHttpClient<IClientsService, ClientsService>(builder.Configuration);
+
+builder.AddModal();
 
 var app = builder.Build();
 
@@ -23,8 +26,6 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-
 app.UseAntiforgery();
 
 app.MapStaticAssets();

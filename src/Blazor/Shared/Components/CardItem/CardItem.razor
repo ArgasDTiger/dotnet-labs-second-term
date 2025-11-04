@@ -1,0 +1,59 @@
+﻿@typeparam TItem
+
+<div class="card">
+    @if (HeaderContent != null)
+    {
+        <div class="title">
+            @HeaderContent
+        </div>
+    }
+
+    @if (MiddleContent != null)
+    {
+        <div class="description">
+            @MiddleContent
+        </div>
+    }
+
+    @if (ListContent != null)
+    {
+        <ul class="subject-data">
+            @ListContent
+        </ul>
+    }
+
+    @if (ShowActions)
+    {
+        <div class="actions-container">
+            @if (ShowDetails)
+            {
+                <button
+                    class="btn-primary"
+                    type="button"
+                    @onclick="HandleDetailsClick">
+                    Details
+                </button>
+            }
+
+            @if (ShowEdit)
+            {
+                <button
+                    class="btn-secondary"
+                    type="button"
+                    @onclick="HandleEditClick">
+                    Edit
+                </button>
+            }
+
+            @if (ShowDelete)
+            {
+                <button
+                    class="btn-danger"
+                    type="button"
+                    @onclick="HandleDeleteClick">
+                    Delete
+                </button>
+            }
+        </div>
+    }
+</div>

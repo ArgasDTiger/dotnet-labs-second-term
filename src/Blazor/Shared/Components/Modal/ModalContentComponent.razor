@@ -1,0 +1,10 @@
+﻿@{
+    var inCenter = InCenter();
+}
+
+<div @onclick:stopPropagation
+     id="@ModalModel.Id"
+     class="@($"bch-modal-content-container modal-color {(inCenter ? "bch-central" : "")} {ModalModel.CssClass}") black"
+     style="@($"width: {ModalModel.Width}; height: {ModalModel.Height}; z-index: {ModalModel.ZIndex}; " + $"{(!inCenter ? $"left: {ModalModel.X}; top: {ModalModel.Y};" : "")}")">
+    @ModalModel.Fragment
+</div>

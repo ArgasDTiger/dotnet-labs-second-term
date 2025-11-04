@@ -1,3 +1,19 @@
+:root {
+    --primary-background: #444449;
+    --secondary-background: #8a9797;
+    --text-primary: #f1eeee;
+    --text-secondary: #a69494;
+
+    --btn-background: #040303;
+    --btn-hover: #2b2a2a;
+    --btn-secondary-background: #606477;
+    --btn-secondary-hover: #7d8197;
+    --btn-danger-background: #800000;
+    --btn-danger-background-hover: #990000;
+
+    --navbar-background: #24262c;
+}
+
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
