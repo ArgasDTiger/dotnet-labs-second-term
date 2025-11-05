@@ -1,0 +1,7 @@
+﻿@page "/clients/{ClientId:guid}"
+@rendermode InteractiveServer
+<h3>ClientDetails: </h3>
+
+@if (Client is not null) {
+    <h1>@Client.FirstName</h1>
+}

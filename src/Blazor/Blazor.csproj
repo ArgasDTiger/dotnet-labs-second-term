@@ -15,7 +15,6 @@
       <AdditionalFiles Include="Shared\Layout\NavMenu.razor" />
       <AdditionalFiles Include="Shared\Pages\Error.razor" />
       <AdditionalFiles Include="Shared\Pages\Home.razor" />
-      <AdditionalFiles Include="Shared\Pages\Weather.razor" />
     </ItemGroup>
 
     <ItemGroup>

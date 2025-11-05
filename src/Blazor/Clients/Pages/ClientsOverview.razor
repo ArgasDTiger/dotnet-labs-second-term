@@ -1,0 +1,112 @@
+﻿@page "/clients"
+@using Blazor.Core.Models
+@using Blazor.Shared.Components.CardItem
+@using Blazor.Shared.Components.Modal
+@rendermode InteractiveServer
+
+<h3>Clients</h3>
+
+<div class="card-container">
+    @foreach (var client in Clients)
+    {
+        <CardItem TItem="Client"
+                  Item="client"
+                  ShowDetails="true"
+                  ShowEdit="true"
+                  ShowDelete="true"
+                  OnDetailsClick="@((Client c) => OnDetailsClick(c))"
+                  OnEditClick="@((Client c) => OpenEditModal(c))"
+                  OnDeleteClick="@((Client c) => OpenDeleteModal(c))">
+            
+            <HeaderContent>
+                @client.LastName @client.FirstName @client.MiddleName
+            </HeaderContent>
+            
+            <MiddleContent>
+                @client.PhoneNumber <br> @client.HomeAddress
+            </MiddleContent>
+            
+            <ListContent>
+                @if (client.PassportSeries is not null)
+                {
+                    <li class="subject-item">
+                        <div class="header">Passport Series:</div>
+                        <div class="value">@client.PassportSeries</div>
+                    </li>
+                }
+                <li class="subject-item">
+                    <div class="header">Passport Number:</div>
+                    <div class="value">@client.PassportNumber</div>
+                </li>
+            </ListContent>
+        </CardItem>
+    }
+</div>
+
+<ModalComponent @bind-Show="_showEditModal" 
+                Width="500px" 
+                Height="90%">
+    @if (_selectedClient != null)
+    {
+        <div class="modal-content">
+            <h4>Edit Client</h4>
+            
+            <div class="form-group">
+                <label>First Name</label>
+                <input @bind="_selectedClient.FirstName" class="form-control" />
+            </div>
+            
+            <div class="form-group">
+                <label>Middle Name</label>
+                <input @bind="_selectedClient.MiddleName" class="form-control" />
+            </div>
+            
+            <div class="form-group">
+                <label>Last Name</label>
+                <input @bind="_selectedClient.LastName" class="form-control" />
+            </div>
+            
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input @bind="_selectedClient.PhoneNumber" class="form-control" />
+            </div>
+            
+            <div class="form-group">
+                <label>Home Address</label>
+                <textarea @bind="_selectedClient.HomeAddress" class="form-control"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Passport Series</label>
+                <input @bind="_selectedClient.PassportSeries" class="form-control" />
+            </div>
+            
+            <div class="form-group">
+                <label>Passport Number</label>
+                <input @bind="_selectedClient.PassportNumber" class="form-control" />
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn-primary" @onclick="HandleClientSaved">Save</button>
+                <button class="btn-secondary" @onclick="CloseEditModal">Cancel</button>
+            </div>
+        </div>
+    }
+</ModalComponent>
+
+<ModalComponent @bind-Show="_showDeleteModal" 
+                Width="400px" 
+                Height="200px">
+    @if (_selectedClient != null)
+    {
+        <div class="modal-content">
+            <h4>Confirm Delete</h4>
+            <p>Are you sure you want to delete <strong>@_selectedClient.FirstName @_selectedClient.LastName</strong>?</p>
+            
+            <div class="modal-actions">
+                <button class="btn-danger" @onclick="HandleDeleteConfirmed">Delete</button>
+                <button class="btn-secondary" @onclick="CloseDeleteModal">Cancel</button>
+            </div>
+        </div>
+    }
+</ModalComponent>

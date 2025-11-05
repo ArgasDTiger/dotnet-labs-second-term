@@ -7,7 +7,7 @@ namespace Blazor.Movies.Pages;
 
 public sealed partial class MoviesOverview : ComponentBase
 {
-    [Inject] private IMoviesService MoviesService { get; set; } = null!;
+    [Inject] private IMoviesService MoviesService { get; init; } = null!;
 
     private List<Movie> Movies { get; set; } = [];
     
@@ -25,14 +25,7 @@ public sealed partial class MoviesOverview : ComponentBase
 
     private void OpenEditModal(Movie movie)
     {
-        _selectedMovie = new Movie
-        {
-            Id = movie.Id,
-            Title = movie.Title,
-            Description = movie.Description,
-            PricePerDay = movie.PricePerDay,
-            CollateralValue = movie.CollateralValue
-        };
+        _selectedMovie = movie with { };
         _showEditModal = true;
     }
 
@@ -45,7 +38,7 @@ public sealed partial class MoviesOverview : ComponentBase
 
     private async Task HandleMovieSaved()
     {
-        if (_selectedMovie == null) return;
+        if (_selectedMovie is null) return;
 
         
         UpdateMovieRequest request = new(_selectedMovie.Title, _selectedMovie.Description, _selectedMovie.PricePerDay, _selectedMovie.CollateralValue);

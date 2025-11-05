@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
+using Blazor.Clients.Requests;
 using Blazor.Core.Models;
 using Blazor.Shared.Results;
-using Maui.Features.Clients.Requests;
 
 namespace Blazor.Clients.Services;
 

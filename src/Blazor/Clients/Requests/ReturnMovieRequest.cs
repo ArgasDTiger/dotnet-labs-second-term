@@ -1,3 +1,3 @@
-﻿namespace Maui.Features.Clients.Requests;
+﻿namespace Blazor.Clients.Requests;
 
 public sealed record ReturnMovieRequest(Guid ClientId, Guid MovieId);

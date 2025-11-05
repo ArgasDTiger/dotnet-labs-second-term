@@ -1,4 +1,4 @@
-﻿namespace Maui.Features.Clients.Requests;
+﻿namespace Blazor.Clients.Requests;
 
 public sealed record UpdateClientRequest(
     string FirstName,
