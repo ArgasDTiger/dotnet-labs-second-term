@@ -13,7 +13,6 @@
     <ItemGroup>
       <AdditionalFiles Include="Shared\Layout\MainLayout.razor" />
       <AdditionalFiles Include="Shared\Layout\NavMenu.razor" />
-      <AdditionalFiles Include="Shared\Pages\Counter.razor" />
       <AdditionalFiles Include="Shared\Pages\Error.razor" />
       <AdditionalFiles Include="Shared\Pages\Home.razor" />
       <AdditionalFiles Include="Shared\Pages\Weather.razor" />
