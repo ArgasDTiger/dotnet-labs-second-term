@@ -37,6 +37,8 @@
             </ListContent>
         </CardItem>
     }
+    
+    <button class="btn-black btn-add w-100" @onclick="OpenNewMovieModal">Add New Movie</button>
 </div>
 
 <ModalComponent @bind-Show="_showEditModal" 
@@ -45,7 +47,7 @@
     @if (_selectedMovie != null)
     {
         <div class="modal-content">
-            <h4>Edit Movie</h4>
+            <h4>@(_isNewMovie ? "Add New Movie" : "Edit Movie")</h4>
             
             <div class="form-group">
                 <label>Title</label>

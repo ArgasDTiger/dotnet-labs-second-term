@@ -1,7 +1,112 @@
 ﻿@page "/clients/{ClientId:guid}"
+@using Blazor.Core.Models
+@using Blazor.Shared.Components.CardItem
+@using Blazor.Shared.Components.Modal
 @rendermode InteractiveServer
-<h3>ClientDetails: </h3>
 
-@if (Client is not null) {
-    <h1>@Client.FirstName</h1>
+@if (Client is not null)
+{
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col">
+                <a @onclick="GoBack" class="btn-secondary">← Back to Clients</a>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h1 class="card-title">@Client.LastName @Client.FirstName @Client.MiddleName</h1>
+                <hr/>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Phone Number:</strong> @Client.PhoneNumber</p>
+                        <p><strong>Home Address:</strong> @Client.HomeAddress</p>
+                    </div>
+                    <div class="col-md-6">
+                        @if (Client.PassportSeries is not null)
+                        {
+                            <p><strong>Passport Series:</strong> @Client.PassportSeries</p>
+                        }
+                        <p><strong>Passport Number:</strong> @Client.PassportNumber</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (Client.RentedMovies.Length > 0)
+        {
+            <h2>Rented Movies</h2>
+            <div class="card-container">
+                @foreach (var movie in Client.RentedMovies)
+                {
+                    <CardItem TItem="ClientMovie"
+                              Item="movie"
+                              ShowDetails="false"
+                              ShowEdit="false"
+                              ShowDelete="false">
+
+                        <HeaderContent>
+                            @movie.MovieTitle
+                        </HeaderContent>
+
+                        <ListContent>
+                            <li class="subject-item">
+                                <div class="header">Expected return date:</div>
+                                <div class="value">@movie.ExpectedReturnDate.ToString("yyyy-MM-dd")</div>
+                            </li>
+                            <li class="subject-item">
+                                <div class="header">Price per day:</div>
+                                <div class="value">@movie.PricePerDay.ToString("C")</div>
+                            </li>
+                            @if (movie.ReturnedDate is not null)
+                            {
+                                <li class="subject-item">
+                                    <div class="header">Returned date:</div>
+                                    <div class="value">@movie.ReturnedDate.Value.ToString("yyyy-MM-dd")</div>
+                                </li>
+                            }
+                            @if (movie.ReturnedDate is null)
+                            {
+                                <li>
+                                    <button type="button"
+                                            class="btn-primary"
+                                            @onclick="() => OpenReturnModal(movie)">
+                                        Return
+                                    </button>
+                                </li>
+                            }
+                        </ListContent>
+                    </CardItem>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                This client has no rented movies.
+            </div>
+        }
+    </div>
 }
+else
+{
+    <p>Loading...</p>
+}
+
+<ModalComponent @bind-Show="_showReturnModal"
+                Width="400px"
+                Height="200px">
+    @if (_selectedMovie != null)
+    {
+        <div class="modal-content">
+            <h4>Confirm Return</h4>
+            <p>Are you sure you want to return <strong>@_selectedMovie.MovieTitle</strong>?</p>
+
+            <div class="modal-actions">
+                <button class="btn-primary" @onclick="HandleReturnConfirmed">Return Movie</button>
+                <button class="btn-secondary" @onclick="CloseReturnModal">Cancel</button>
+            </div>
+        </div>
+    }
+</ModalComponent>

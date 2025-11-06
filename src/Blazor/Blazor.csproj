@@ -23,6 +23,7 @@
       <_ContentIncludedByDefault Remove="Components\Pages\Home.razor" />
       <_ContentIncludedByDefault Remove="Components\Pages\MoviesOverview.razor" />
       <_ContentIncludedByDefault Remove="Components\Pages\Weather.razor" />
+      <_ContentIncludedByDefault Remove="Shared\Components\AddButton\AddButtonComponent.razor" />
     </ItemGroup>
 
 </Project>

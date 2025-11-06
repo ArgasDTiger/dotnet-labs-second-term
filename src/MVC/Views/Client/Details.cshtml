@@ -58,7 +58,8 @@
                         @if (movie.ReturnedDate is null)
                         {
                             <li>
-                                <form asp-controller="Client" asp-action="ReturnMovie" method="post" onsubmit="return confirm('Are you sure you want to return this movie?')">
+                                <form asp-controller="Client" asp-action="ReturnMovie" method="post"
+                                      onsubmit="return confirm('Are you sure you want to return this movie?')">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="movieId" value="@movie.MovieId"/>
                                     <input type="hidden" name="clientId" value="@Model.Id"/>

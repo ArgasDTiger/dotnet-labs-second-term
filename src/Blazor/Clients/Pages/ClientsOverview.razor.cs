@@ -14,6 +14,7 @@ public sealed partial class ClientsOverview : ComponentBase
 
     private bool _showEditModal;
     private bool _showDeleteModal;
+    private bool _isNewClient;
     private Client? _selectedClient;
 
     protected override async Task OnInitializedAsync()
@@ -24,9 +25,27 @@ public sealed partial class ClientsOverview : ComponentBase
             error => Console.WriteLine(error.Message));
     }
 
+    private void OpenNewClientModal()
+    {
+        _selectedClient = new Client
+        {
+            Id = Guid.NewGuid(),
+            FirstName = string.Empty,
+            MiddleName = string.Empty,
+            LastName = string.Empty,
+            PhoneNumber = string.Empty,
+            HomeAddress = string.Empty,
+            PassportSeries = null,
+            PassportNumber = string.Empty,
+        };
+        _isNewClient = true;
+        _showEditModal = true;
+    }
+
     private void OpenEditModal(Client client)
     {
         _selectedClient = client with { };
+        _isNewClient = false;
         _showEditModal = true;
     }
 
@@ -34,6 +53,7 @@ public sealed partial class ClientsOverview : ComponentBase
     {
         _showEditModal = false;
         _selectedClient = null;
+        _isNewClient = false;
         StateHasChanged();
     }
 
@@ -41,28 +61,45 @@ public sealed partial class ClientsOverview : ComponentBase
     {
         if (_selectedClient is null) return;
 
+        if (_isNewClient)
+        {
+            CreateClientRequest request = new(
+                FirstName: _selectedClient.FirstName,
+                MiddleName: _selectedClient.MiddleName,
+                LastName: _selectedClient.LastName,
+                PhoneNumber: _selectedClient.PhoneNumber,
+                HomeAddress: _selectedClient.HomeAddress,
+                PassportSeries: _selectedClient.PassportSeries,
+                PassportNumber: _selectedClient.PassportNumber);
 
-        UpdateClientRequest request = new(
-            FirstName: _selectedClient.FirstName,
-            MiddleName: _selectedClient.MiddleName,
-            LastName: _selectedClient.LastName,
-            PhoneNumber: _selectedClient.PhoneNumber,
-            HomeAddress: _selectedClient.HomeAddress,
-            PassportSeries: _selectedClient.PassportSeries,
-            PassportNumber: _selectedClient.PassportNumber);
+            var result = await ClientsService.CreateClient(request);
+            result.Switch(
+                _ => Clients.Add(_selectedClient),
+                error => Console.WriteLine(error.Message));
+        }
+        else
+        {
+            UpdateClientRequest request = new(
+                FirstName: _selectedClient.FirstName,
+                MiddleName: _selectedClient.MiddleName,
+                LastName: _selectedClient.LastName,
+                PhoneNumber: _selectedClient.PhoneNumber,
+                HomeAddress: _selectedClient.HomeAddress,
+                PassportSeries: _selectedClient.PassportSeries,
+                PassportNumber: _selectedClient.PassportNumber);
 
-
-        var result = await ClientsService.UpdateClient(_selectedClient.Id, request);
-        result.Switch(
-            _ =>
-            {
-                var index = Clients.FindIndex(m => m.Id == _selectedClient.Id);
-                if (index >= 0)
+            var result = await ClientsService.UpdateClient(_selectedClient.Id, request);
+            result.Switch(
+                _ =>
                 {
-                    Clients[index] = _selectedClient;
-                }
-            },
-            error => Console.WriteLine(error.Message));
+                    var index = Clients.FindIndex(m => m.Id == _selectedClient.Id);
+                    if (index >= 0)
+                    {
+                        Clients[index] = _selectedClient;
+                    }
+                },
+                error => Console.WriteLine(error.Message));
+        }
 
         CloseEditModal();
     }

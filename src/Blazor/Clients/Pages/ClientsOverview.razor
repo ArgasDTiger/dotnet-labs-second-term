@@ -41,6 +41,8 @@
             </ListContent>
         </CardItem>
     }
+    
+    <button class="btn-black btn-add w-100" @onclick="OpenNewClientModal">Add New Client</button>
 </div>
 
 <ModalComponent @bind-Show="_showEditModal" 
@@ -49,7 +51,7 @@
     @if (_selectedClient != null)
     {
         <div class="modal-content">
-            <h4>Edit Client</h4>
+            <h4>@(_isNewClient ? "Add New Client" : "Edit Client")</h4>
             
             <div class="form-group">
                 <label>First Name</label>
