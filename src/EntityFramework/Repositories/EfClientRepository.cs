@@ -22,26 +22,28 @@ public sealed class EfClientRepository : IClientRepository
 
     public Task<ClientWithMoviesResponse?> GetClientByIdAsync(Guid clientId, CancellationToken cancellationToken)
     {
-        return _context.Set<Client>().Select(c => new ClientWithMoviesResponse
-        {
-            Id = c.Id,
-            FirstName = c.FirstName,
-            MiddleName = c.MiddleName,
-            LastName = c.LastName,
-            PhoneNumber = c.PhoneNumber,
-            HomeAddress = c.HomeAddress,
-            PassportSeries = c.PassportSeries,
-            PassportNumber = c.PassportNumber,
-            RentedMovies = c.ClientMovies.Select(cm => new ClientMovieResponse
+        return _context.Set<Client>()
+            .Where(c => c.Id == clientId)
+            .Select(c => new ClientWithMoviesResponse
             {
-                MovieTitle = cm.Movie.Title,
-                StartDate = cm.StartDate,
-                ExpectedReturnDate = cm.ExpectedReturnDate,
-                ReturnedDate = cm.ReturnDate,
-                PricePerDay = cm.Movie.PricePerDay,
-                MovieId = cm.MovieId
-            }).ToList()
-        }).FirstOrDefaultAsync(c => c.Id == clientId, cancellationToken);
+                Id = c.Id,
+                FirstName = c.FirstName,
+                MiddleName = c.MiddleName,
+                LastName = c.LastName,
+                PhoneNumber = c.PhoneNumber,
+                HomeAddress = c.HomeAddress,
+                PassportSeries = c.PassportSeries,
+                PassportNumber = c.PassportNumber,
+                RentedMovies = c.ClientMovies.Select(cm => new ClientMovieResponse
+                {
+                    MovieTitle = cm.Movie.Title,
+                    StartDate = cm.StartDate,
+                    ExpectedReturnDate = cm.ExpectedReturnDate,
+                    ReturnedDate = cm.ReturnDate,
+                    PricePerDay = cm.Movie.PricePerDay,
+                    MovieId = cm.MovieId
+                }).ToList()
+            }).FirstOrDefaultAsync(cancellationToken);
     }
 
     public Task<ImmutableArray<ClientResponse>> GetAllClientsAsync(CancellationToken cancellationToken)
