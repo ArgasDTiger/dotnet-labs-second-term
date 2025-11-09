@@ -1,0 +1,96 @@
+/* 1. Include functions first (so you can manipulate colors, SVGs, calc, etc) */
+@import "bootstrap/scss/functions";
+/* 2. Include any default variable overrides here */
+/* 3. Include remainder of required Bootstrap stylesheets (including any separate color mode stylesheets) */
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/variables-dark";
+/* 4. Include any default map overrides here */
+/* 5. Include remainder of required parts */
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/root";
+/* 6. Optionally include any other parts as needed */
+@import "bootstrap/scss/utilities";
+@import "bootstrap/scss/reboot";
+@import "bootstrap/scss/type";
+@import "bootstrap/scss/helpers";
+@import "bootstrap/scss/buttons";
+/* 7. Optionally include utilities API last to generate classes based on the Sass map in `_utilities.scss` */
+@import "bootstrap/scss/utilities/api";
+
+$bg-color: #cfd2d6;
+
+html, body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+a, .btn-link {
+  color: #006bb7;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.btn,
+.btn-link.nav-link,
+.form-control,
+.form-check-input {
+  &:focus,
+  &:active:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+  }
+}
+
+.content {
+  padding-top: 1.1rem;
+}
+
+h1 {
+  &:focus {
+    outline: none;
+  }
+}
+
+.darker-border-checkbox.form-check-input {
+  border-color: #929292;
+}
+
+.form-floating {
+  > .form-control-plaintext,
+  > .form-control {
+    &::placeholder {
+      color: var(--bs-secondary-color);
+      text-align: end;
+    }
+
+    &:focus::placeholder {
+      text-align: start;
+    }
+  }
+}
+
+.card-container {
+  width: 100%;
+  display: flex;
+  height: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn-primary,
+.btn-black {
+  background-color: #807979;
+  color: #ece9e9;
+  border-color: black;
+
+  &:hover {
+    background-color: #5e5656;
+  }
+}
+
+.btn-add {
+  margin-bottom: 2em;
+}
